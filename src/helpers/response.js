@@ -1,4 +1,4 @@
-function respon(res, status, result = '') {
+function respon(res, status, result = '', error = 'false') {
   let desc = '';
 
   switch (status) {
@@ -32,7 +32,7 @@ function respon(res, status, result = '') {
   const results = {
     status,
     description: desc,
-    isError: false,
+    isError: error,
     // eslint-disable-next-line no-nested-ternary
     data: isObject(result) ? [result] : Array.isArray(result) ? result : result,
   };

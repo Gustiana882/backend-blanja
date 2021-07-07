@@ -62,7 +62,7 @@ category.updateCategory = (data) => new Promise((resolve, reject) => {
 });
 
 category.deleteCategory = (key) => new Promise((resolve, reject) => {
-  db.query('DELETE FROM public.category  WHERE id =$1', [key.id])
+  db.query('DELETE FROM public.category WHERE id =$1', [key.id])
     .then((res) => {
       if (res.rowCount) {
         resolve({ message: 'Data deleted successfully' });

@@ -24,7 +24,7 @@ category.updateCategory = async (req, res) => {
   try {
     const getId = await model.getCategoryById(req.body.id);
     if (getId.error) {
-      response(res, 401, getId);
+      response(res, 401, getId, getId.error);
     } else {
       const update = await model.updateCategory(req.body);
       response(res, 200, update);
@@ -37,8 +37,8 @@ category.updateCategory = async (req, res) => {
 category.deleteCategory = async (req, res) => {
   try {
     const getId = await model.getCategoryById(req.body.id);
-    if (!getId[0]) {
-      response(res, 401, getId);
+    if (getId.error) {
+      response(res, 401, getId, getId.error);
     } else {
       const respons = await model.deleteCategory(req.body);
       response(res, 200, respons);
