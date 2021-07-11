@@ -43,11 +43,11 @@ products.updateProduct = async (req, res) => {
 
 products.deleteProduct = async (req, res) => {
   try {
-    const cekid = await model.getProductById(req.body.id);
+    const cekid = await model.getProductById(req.params.id);
     if (cekid.error) {
-      response(res, 401, cekid);
+      response(res, 401, cekid.message, cekid.error);
     } else {
-      const respons = await model.deleteProduct(req.body);
+      const respons = await model.deleteProduct(req.params);
       response(res, 200, respons);
     }
   } catch (error) {
@@ -58,7 +58,11 @@ products.deleteProduct = async (req, res) => {
 products.searchProduct = async (req, res) => {
   try {
     const searchProduct = await model.searchProduct(req.query);
-    response(res, 200, searchProduct);
+    if (searchProduct.length > 0) {
+      response(res, 200, searchProduct);
+    } else {
+      response(res, 401, { message: 'Product not found!' });
+    }
   } catch (error) {
     response(res, 400, error);
   }

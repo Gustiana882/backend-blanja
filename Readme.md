@@ -11,7 +11,7 @@
 Clone the repository
 
 ```bash
-git clone https://github.com
+git@github.com:Gustiana882/rest-api-expressjs.git
 ```
 
 ## Features

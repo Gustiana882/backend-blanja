@@ -3,7 +3,9 @@ const express = require('express');
 const route = express.Router();
 const product = require('./routes/product');
 const bag = require('./routes/bag');
+const auth = require('./routes/auth');
 
+route.use('/', auth);
 route.use('/product', product);
 route.use('/bag', bag);
 

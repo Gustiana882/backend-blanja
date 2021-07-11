@@ -45,11 +45,11 @@ bags.updateBag = async (req, res) => {
 
 bags.deleteBag = async (req, res) => {
   try {
-    const getId = await model.getBagById(req.body.id);
+    const getId = await model.getBagById(req.params.id);
     if (getId.error) {
-      response(res, 401, getId);
+      response(res, 401, getId.message, getId.error);
     } else {
-      const delete1 = await model.deleteBag(req.body);
+      const delete1 = await model.deleteBag(req.params);
       response(res, 200, delete1);
     }
   } catch (error) {

@@ -36,11 +36,11 @@ category.updateCategory = async (req, res) => {
 
 category.deleteCategory = async (req, res) => {
   try {
-    const getId = await model.getCategoryById(req.body.id);
+    const getId = await model.getCategoryById(req.params.id);
     if (getId.error) {
-      response(res, 401, getId, getId.error);
+      response(res, 401, getId.message, getId.error);
     } else {
-      const respons = await model.deleteCategory(req.body);
+      const respons = await model.deleteCategory(req.params);
       response(res, 200, respons);
     }
   } catch (error) {

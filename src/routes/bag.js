@@ -6,6 +6,6 @@ const controller = require('../controllers/bag');
 route.get('/', controller.getAllBag);
 route.post('/', controller.addBag);
 route.put('/', controller.updateBag);
-route.delete('/', controller.deleteBag);
+route.delete('/:id', controller.deleteBag);
 
 module.exports = route;
