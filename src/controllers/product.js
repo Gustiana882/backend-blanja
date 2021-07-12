@@ -3,6 +3,7 @@ const model = require('../models/product');
 const categorymodel = require('../models/category');
 const response = require('../helpers/response');
 const { redisDb } = require('../configs/redis');
+const deleteImages = require('../helpers/delete_images');
 
 products.getAllProduct = async (req, res) => {
   try {
@@ -19,6 +20,7 @@ products.addProduct = async (req, res) => {
   try {
     const category = await categorymodel.getCategoryById(req.body.category);
     if (category.error) {
+      deleteImages(req.file.path);
       response(res, 401, category);
     } else {
       const data = {
@@ -35,6 +37,7 @@ products.addProduct = async (req, res) => {
       response(res, 200, respons);
     }
   } catch (error) {
+    deleteImages(req.file.path);
     response(res, 400, error);
   }
 };
@@ -43,6 +46,7 @@ products.updateProduct = async (req, res) => {
   try {
     const cekid = await model.getProductById(req.body.id);
     if (cekid.error) {
+      deleteImages(req.file.path);
       response(res, 401, cekid);
     } else {
       const data = {
@@ -56,10 +60,12 @@ products.updateProduct = async (req, res) => {
         image: req.file.path,
       };
       const respons = await model.updateProduct(data);
+      deleteImages(cekid[0].image);
       redisDb.del('product');
       response(res, 200, respons);
     }
   } catch (error) {
+    deleteImages(req.file.path);
     response(res, 400, error);
   }
 };
@@ -71,6 +77,7 @@ products.deleteProduct = async (req, res) => {
       response(res, 401, cekid.message, cekid.error);
     } else {
       const respons = await model.deleteProduct(req.params);
+      deleteImages(cekid[0].image);
       redisDb.del('product');
       response(res, 200, respons);
     }

@@ -9,8 +9,8 @@ const images = require('../middleware/images');
 
 route.get('/', redis('product'), controller.getAllProduct);
 route.post('/', validate(['admin']), images('product'), controller.addProduct);
-route.delete('/:id', validate(['admin']), images('product'), controller.deleteProduct);
-route.put('/', validate(['admin']), controller.updateProduct);
+route.put('/', validate(['admin']), images('product'), controller.updateProduct);
+route.delete('/:id', validate(['admin']), controller.deleteProduct);
 
 route.get('/category', redis('category'), category.getAllCategory);
 route.post('/category', validate(['admin']), images('category'), category.addCategory);

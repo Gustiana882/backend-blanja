@@ -4,12 +4,14 @@ const model = require('../models/auth');
 const response = require('../helpers/response');
 const hashPassword = require('../helpers/hash');
 const createToken = require('../helpers/token');
+const deleteImages = require('../helpers/delete_images');
 
 auth.register = async (req, res) => {
   try {
     const cekEmail = await model.getUserByEmail(req.body.email);
     if (cekEmail.length > 0) {
       response(res, 200, { message: 'e-mail already registered' });
+      deleteImages(req.file.path);
     } else {
       const data = {
         name: req.body.name,
