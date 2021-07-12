@@ -8,6 +8,7 @@ products.getAllProduct = async (req, res) => {
   try {
     const allProduct = await model.getAllProduct();
     redisDb.setex('product', 60, JSON.stringify(allProduct));
+    // console.log('controller product');
     response(res, 200, allProduct);
   } catch (error) {
     response(res, 400, error);
