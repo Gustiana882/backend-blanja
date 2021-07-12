@@ -7,9 +7,10 @@ const checkToken = (role) => (req, res, next) => {
     respone(res, 401, { message: 'you are not login!' });
   } else {
     jwt.verify(token, process.env.JWT_KEY, (err, decode) => {
+      const cekRole = role.find((array) => array === decode.roles);
       if (err) {
         respone(res, 401, err, true);
-      } else if (decode.roles === role) {
+      } else if (cekRole) {
         next();
       } else {
         respone(res, 401, { message: 'access is not allowed' }, true);

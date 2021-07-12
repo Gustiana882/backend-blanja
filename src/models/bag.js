@@ -4,7 +4,22 @@ const db = require('../configs/db');
 bag.getAllBag = () => new Promise((resolve, reject) => {
   db.query('SELECT public.bag.*, public.product.title, public.product.price, public.product.store, public.product.image FROM public.bag INNER JOIN public.product ON public.bag.product_id = public.product.id ORDER BY create_at DESC')
     .then((res) => {
-      resolve(res.rows);
+      const json = res.rows.map((data) => {
+        const totalPrice = data.qty * data.price;
+        const object = {
+          id: data.id,
+          product_id: data.product_id,
+          product_title: data.title,
+          product_store: data.store,
+          product_price: data.price,
+          qty: data.qty,
+          total_price: totalPrice,
+          create_at: data.create_at,
+          update_at: data.update_at,
+        };
+        return object;
+      });
+      resolve(json);
     })
     .catch((err) => {
       reject(err.message);

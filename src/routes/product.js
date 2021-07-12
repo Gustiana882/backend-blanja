@@ -5,16 +5,17 @@ const controller = require('../controllers/product');
 const category = require('../controllers/category');
 const validate = require('../middleware/validate');
 const redis = require('../middleware/cache');
+const images = require('../middleware/images');
 
-route.get('/', validate('admin'), redis, controller.getAllProduct);
-route.post('/', controller.addProduct);
-route.delete('/:id', controller.deleteProduct);
-route.put('/', controller.updateProduct);
+route.get('/', redis('product'), controller.getAllProduct);
+route.post('/', validate(['admin']), images('product'), controller.addProduct);
+route.delete('/:id', validate(['admin']), images('product'), controller.deleteProduct);
+route.put('/', validate(['admin']), controller.updateProduct);
 
-route.get('/category', category.getAllCategory);
-route.post('/category', category.addCategory);
-route.put('/category', category.updateCategory);
-route.delete('/category/:id', category.deleteCategory);
+route.get('/category', redis('category'), category.getAllCategory);
+route.post('/category', validate(['admin']), images('category'), category.addCategory);
+route.put('/category', validate(['admin']), images('category'), category.updateCategory);
+route.delete('/category/:id', validate(['admin']), category.deleteCategory);
 
 route.get('/search', controller.searchProduct);
 route.get('/filter', controller.fiter);

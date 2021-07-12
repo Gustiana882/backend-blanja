@@ -1,3 +1,5 @@
+const log = require('../middleware/log_requests');
+
 function respon(res, status, result = '', error = 'false') {
   let desc = '';
 
@@ -36,7 +38,7 @@ function respon(res, status, result = '', error = 'false') {
     // eslint-disable-next-line no-nested-ternary
     data: isObject(result) ? [result] : Array.isArray(result) ? result : result,
   };
-
+  log.response(JSON.stringify(result));
   res.status(status).json(results);
 }
 

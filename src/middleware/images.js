@@ -1,9 +1,10 @@
 const multer = require('multer');
 const response = require('../helpers/response');
+
 // mengatur penyimpanan file name
 
-const storages = multer.diskStorage({
-  destination: 'public/images/profile',
+const storages = (path) => multer.diskStorage({
+  destination: `public/images/${path}`,
   filename: (req, file, cb) => {
     cb(null, `${new Date().toISOString()}-${file.originalname}`);
   },
@@ -21,9 +22,9 @@ const filter = (req, file, cb) => {
   }
 };
 
-const uploadImage = (req, res, next) => {
+const images = (path) => (req, res, next) => {
   const upload = multer({
-    storage: storages,
+    storage: storages(path),
     fileFilter: filter,
   }).single('image');
   upload(req, res, (err) => {
@@ -37,4 +38,4 @@ const uploadImage = (req, res, next) => {
   });
 };
 
-module.exports = uploadImage;
+module.exports = images;

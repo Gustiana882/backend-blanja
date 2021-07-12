@@ -1,15 +1,16 @@
 require('dotenv/config');
 const express = require('express');
-const morgan = require('morgan');
+// const morgan = require('morgan');
 const redis = require('./src/configs/redis');
 
 const server = express();
 const PORT = 3000;
 
+server.use('/public', express.static('public'));
 const main = require('./src/main');
 const db = require('./src/configs/db');
 
-server.use(morgan('dev'));
+// server.use(morgan('dev'));
 server.use(express.json());
 server.use(express.urlencoded({ extended: true }));
 

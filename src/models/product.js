@@ -39,7 +39,7 @@ product.getProductById = (id) => new Promise((resolve, reject) => {
       if (res.rowCount) {
         resolve(res.rows);
       } else {
-        resolve({ error: true, message: 'Category ID not found!' });
+        resolve({ error: true, message: 'Product ID not found!' });
       }
     })
     .catch((err) => {

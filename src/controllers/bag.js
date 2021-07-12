@@ -5,21 +5,10 @@ const response = require('../helpers/response');
 bags.getAllBag = async (req, res) => {
   try {
     const getBag = await model.getAllBag();
-    const json = getBag.map((bag) => {
-      const totalPrice = bag.qty * bag.price;
-      const object = {
-        id: bag.id,
-        product_id: bag.product_id,
-        product_title: bag.title,
-        product_store: bag.store,
-        product_price: bag.price,
-        qty: bag.qty,
-        total_price: totalPrice,
-        create_at: bag.create_at,
-      };
-      return object;
-    });
-    response(res, 200, json);
+    if (getBag.length < 1) {
+      response(res, 200, { message: 'empty bag, please choose one product' });
+    }
+    response(res, 200, getBag);
   } catch (error) {
     response(res, 400, error);
   }

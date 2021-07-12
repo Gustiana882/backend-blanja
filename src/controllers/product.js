@@ -2,10 +2,12 @@ const products = {};
 const model = require('../models/product');
 const categorymodel = require('../models/category');
 const response = require('../helpers/response');
+const { redisDb } = require('../configs/redis');
 
 products.getAllProduct = async (req, res) => {
   try {
     const allProduct = await model.getAllProduct();
+    redisDb.setex('product', 60, JSON.stringify(allProduct));
     response(res, 200, allProduct);
   } catch (error) {
     response(res, 400, error);
@@ -15,11 +17,20 @@ products.getAllProduct = async (req, res) => {
 products.addProduct = async (req, res) => {
   try {
     const category = await categorymodel.getCategoryById(req.body.category);
-
     if (category.error) {
       response(res, 401, category);
     } else {
-      const respons = await model.addProduct(req.body);
+      const data = {
+        title: req.body.title,
+        category: req.body.category,
+        price: req.body.price,
+        store: req.body.store,
+        review: req.body.review,
+        star: req.body.star,
+        image: req.file.path,
+      };
+      const respons = await model.addProduct(data);
+      redisDb.del('product');
       response(res, 200, respons);
     }
   } catch (error) {
@@ -33,7 +44,18 @@ products.updateProduct = async (req, res) => {
     if (cekid.error) {
       response(res, 401, cekid);
     } else {
-      const respons = await model.updateProduct(req.body);
+      const data = {
+        id: req.body.id,
+        title: req.body.title,
+        category: req.body.category,
+        price: req.body.price,
+        store: req.body.store,
+        review: req.body.review,
+        star: req.body.star,
+        image: req.file.path,
+      };
+      const respons = await model.updateProduct(data);
+      redisDb.del('product');
       response(res, 200, respons);
     }
   } catch (error) {
@@ -48,6 +70,7 @@ products.deleteProduct = async (req, res) => {
       response(res, 401, cekid.message, cekid.error);
     } else {
       const respons = await model.deleteProduct(req.params);
+      redisDb.del('product');
       response(res, 200, respons);
     }
   } catch (error) {
