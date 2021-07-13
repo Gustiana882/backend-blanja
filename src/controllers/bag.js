@@ -1,14 +1,17 @@
 const bags = {};
 const model = require('../models/bag');
 const response = require('../helpers/response');
+const decodeToken = require('../helpers/decode_token');
 
 bags.getAllBag = async (req, res) => {
   try {
-    const getBag = await model.getAllBag();
+    const token = await decodeToken(req.headers.token);
+    const getBag = await model.getAllBag(token.user);
     if (getBag.length < 1) {
       response(res, 200, { message: 'empty bag, please choose one product' });
+    } else {
+      response(res, 200, getBag);
     }
-    response(res, 200, getBag);
   } catch (error) {
     response(res, 400, error);
   }
@@ -16,7 +19,13 @@ bags.getAllBag = async (req, res) => {
 
 bags.addBag = async (req, res) => {
   try {
-    const bag = await model.addBag(req.body);
+    const token = await decodeToken(req.headers.token);
+    const data = {
+      productId: req.body.productId,
+      qty: req.body.qty,
+      users: token.user,
+    };
+    const bag = await model.addBag(data);
     response(res, 200, bag);
   } catch (error) {
     response(res, 400, error);
@@ -25,8 +34,19 @@ bags.addBag = async (req, res) => {
 
 bags.updateBag = async (req, res) => {
   try {
-    const update = await model.updateBag(req.body);
-    response(res, 200, update);
+    const getId = await model.getBagById(req.body.id);
+    if (getId.error) {
+      response(res, 401, getId.message, getId.error);
+    } else {
+      const token = await decodeToken(req.headers.token);
+      const data = {
+        id: req.body.id,
+        qty: req.body.qty,
+        users: token.user,
+      };
+      const update = await model.updateBag(data);
+      response(res, 200, update);
+    }
   } catch (error) {
     response(res, 400, error);
   }

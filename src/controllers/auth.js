@@ -10,8 +10,8 @@ auth.register = async (req, res) => {
   try {
     const cekEmail = await model.getUserByEmail(req.body.email);
     if (cekEmail.length > 0) {
-      response(res, 200, { message: 'e-mail already registered' });
       deleteImages(req.file.path);
+      response(res, 200, { message: 'e-mail already registered' });
     } else {
       const data = {
         name: req.body.name,
