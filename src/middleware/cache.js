@@ -9,7 +9,7 @@ const getAll = (key) => (req, res, next) => {
     if (err) {
       return response(res, 500, err, true);
     } else if (data !== null) {
-      // console.log('data redis');
+      console.log('data redis');
       result = JSON.parse(data);
       return response(res, 200, result);
     } else {
