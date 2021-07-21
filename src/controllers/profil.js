@@ -21,17 +21,18 @@ profil.getProfil = async (req, res) => {
 };
 
 profil.editProfil = async (req, res) => {
+  const pathImage = (req.file) ? req.file.path : 'public/images/blank.jpg';
   try {
     const decode = await decodeToken(req.headers.token);
     const cekEmail = await model.getUserByEmail(decode.user);
     if (cekEmail.length < 1) {
-      deleteImages(req.file.path);
+      deleteImages(pathImage);
       response(res, 400, { message: 'e-mail not registered!' }, true);
     } else {
       const data = {
         email: decode.user,
         name: req.body.name,
-        image: req.file.path,
+        image: pathImage,
       };
       const result = await model.editProfil(data);
       if (result > 0) {
@@ -40,7 +41,7 @@ profil.editProfil = async (req, res) => {
       }
     }
   } catch (error) {
-    deleteImages(req.file.path);
+    deleteImages(pathImage);
     response(res, 400, error.message);
   }
 };

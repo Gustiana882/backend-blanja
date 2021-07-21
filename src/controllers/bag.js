@@ -21,12 +21,16 @@ bags.addBag = async (req, res) => {
   try {
     const token = await decodeToken(req.headers.token);
     const data = {
-      productId: req.body.productId,
+      product_id: req.body.productId,
       qty: req.body.qty,
-      users: token.user,
+      user: token.user,
     };
     const bag = await model.addBag(data);
-    response(res, 200, bag);
+    if (bag) {
+      response(res, 200, { message: 'add data bag success' });
+    } else {
+      response(res, 400, { message: 'add data bag error' });
+    }
   } catch (error) {
     response(res, 400, error);
   }
@@ -38,14 +42,16 @@ bags.updateBag = async (req, res) => {
     if (getId.error) {
       response(res, 401, getId.message, getId.error);
     } else {
-      const token = await decodeToken(req.headers.token);
       const data = {
         id: req.body.id,
         qty: req.body.qty,
-        users: token.user,
       };
       const update = await model.updateBag(data);
-      response(res, 200, update);
+      if (update > 0) {
+        response(res, 200, { message: 'update data bag success' });
+      } else {
+        response(res, 400, { message: 'update data bag error' });
+      }
     }
   } catch (error) {
     response(res, 400, error);
@@ -55,11 +61,15 @@ bags.updateBag = async (req, res) => {
 bags.deleteBag = async (req, res) => {
   try {
     const getId = await model.getBagById(req.params.id);
-    if (getId.error) {
-      response(res, 401, getId.message, getId.error);
+    if (!getId) {
+      response(res, 401, { message: 'id not found!' }, true);
     } else {
-      const delete1 = await model.deleteBag(req.params);
-      response(res, 200, delete1);
+      const delete1 = await model.deleteBag(req.params.id);
+      if (delete1 > 0) {
+        response(res, 200, { message: 'delete data bag success' });
+      } else {
+        response(res, 400, { message: 'delete data bag error' }, true);
+      }
     }
   } catch (error) {
     response(res, 400, error);

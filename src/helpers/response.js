@@ -1,6 +1,6 @@
 const log = require('../middleware/log_requests');
 
-function respon(res, status, result = '', error = 'false') {
+function respon(res, status, result = '', error = false) {
   let desc = '';
 
   switch (status) {

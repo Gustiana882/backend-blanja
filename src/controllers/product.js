@@ -9,86 +9,100 @@ products.getAllProduct = async (req, res) => {
   try {
     const allProduct = await model.getAllProduct();
     redisDb.setex('product', 60, JSON.stringify(allProduct));
-    // console.log('controller product');
+    // console.log(allProduct);
     response(res, 200, allProduct);
   } catch (error) {
-    response(res, 400, error);
+    response(res, 400, error, true);
   }
 };
 
 products.addProduct = async (req, res) => {
+  const pathImage = (req.file) ? req.file.path : 'public/images/blank.jpg';
   try {
     const category = await categorymodel.getCategoryById(req.body.category);
-    if (category.error) {
-      deleteImages(req.file.path);
-      response(res, 401, category);
+    if (!category) {
+      deleteImages(pathImage);
+      response(res, 401, { message: 'category not found' });
     } else {
       const data = {
         title: req.body.title,
-        category: req.body.category,
+        category_id: req.body.category,
         price: req.body.price,
-        store: req.body.store,
+        brand: req.body.brand,
         review: req.body.review,
         star: req.body.star,
-        image: req.file.path,
+        image: pathImage,
       };
       const respons = await model.addProduct(data);
       redisDb.del('product');
-      response(res, 200, respons);
+      if (respons) {
+        response(res, 200, { message: 'add product is success' });
+      } else {
+        response(res, 400, { message: 'add product is error' }, true);
+      }
     }
   } catch (error) {
-    deleteImages(req.file.path);
+    deleteImages(pathImage);
     response(res, 400, error);
   }
 };
 
 products.updateProduct = async (req, res) => {
+  const pathImage = (req.file) ? req.file.path : 'public/images/blank.jpg';
   try {
     const cekid = await model.getProductById(req.body.id);
-    if (cekid.error) {
-      deleteImages(req.file.path);
-      response(res, 401, cekid);
+    if (!cekid) {
+      deleteImages(pathImage);
+      response(res, 401, { message: 'id not found!' }, true);
     } else {
       const data = {
-        id: req.body.id,
+        id_product: req.body.id,
         title: req.body.title,
-        category: req.body.category,
+        category_id: req.body.category,
         price: req.body.price,
-        store: req.body.store,
+        brand: req.body.brand,
         review: req.body.review,
         star: req.body.star,
-        image: req.file.path,
+        image: pathImage,
       };
       const respons = await model.updateProduct(data);
-      deleteImages(cekid[0].image);
+      deleteImages(cekid.image);
       redisDb.del('product');
-      response(res, 200, respons);
+      if (respons > 0) {
+        response(res, 200, { message: 'data updated' });
+      } else {
+        response(res, 400, { message: 'data gagal updated' }, true);
+      }
     }
   } catch (error) {
-    deleteImages(req.file.path);
-    response(res, 400, error);
+    deleteImages(pathImage);
+    response(res, 400, error, true);
   }
 };
 
 products.deleteProduct = async (req, res) => {
   try {
     const cekid = await model.getProductById(req.params.id);
-    if (cekid.error) {
-      response(res, 401, cekid.message, cekid.error);
+    if (!cekid) {
+      response(res, 401, { message: 'id not found!' }, true);
     } else {
-      const respons = await model.deleteProduct(req.params);
-      deleteImages(cekid[0].image);
+      const respons = await model.deleteProduct(req.params.id);
+      deleteImages(cekid.image);
       redisDb.del('product');
-      response(res, 200, respons);
+      if (respons > 0) {
+        response(res, 200, { message: 'data success to delete' });
+      } else {
+        response(res, 400, { message: 'data failed to delete' }, true);
+      }
     }
   } catch (error) {
-    response(res, 400, error);
+    response(res, 400, error, true);
   }
 };
 
 products.searchProduct = async (req, res) => {
   try {
-    const searchProduct = await model.searchProduct(req.query);
+    const searchProduct = await model.searchProduct(req.query.p);
     if (searchProduct.length > 0) {
       response(res, 200, searchProduct);
     } else {
@@ -104,10 +118,10 @@ products.fiter = async (req, res) => {
     const { name, category, price } = req.query;
     let filter = await model.getAllProduct();
     if (name === 'ASC' || name === 'DESC') {
-      filter = await model.getAllProduct('public.product.title', name);
+      filter = await model.getAllProduct('title', name);
     }
     if (price === 'ASC' || price === 'DESC') {
-      filter = await model.getAllProduct('public.product.price', price);
+      filter = await model.getAllProduct('price', price);
     }
     if (category) {
       filter = filter.filter((product) => product.category[0].name === category);

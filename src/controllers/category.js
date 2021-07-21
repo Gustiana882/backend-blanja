@@ -15,39 +15,49 @@ category.getAllCategory = async (req, res) => {
 };
 
 category.addCategory = async (req, res) => {
+  const pathImage = (req.file) ? req.file.path : 'public/images/blank.jpg';
   try {
     const data = {
       name: req.body.name,
-      image: req.file.path,
+      image: pathImage,
     };
     const allCategory = await model.addCategory(data);
     redisDb.del('category');
-    response(res, 200, allCategory);
+    if (allCategory) {
+      response(res, 200, { message: 'add categories is success' });
+    } else {
+      response(res, 400, { message: 'add categories is error' }, true);
+    }
   } catch (error) {
-    deleteImages(req.file.path);
+    deleteImages(pathImage);
     response(res, 400, error);
   }
 };
 
 category.updateCategory = async (req, res) => {
+  const pathImage = (req.file) ? req.file.path : 'public/images/blank.jpg';
   try {
-    const getId = await model.getCategoryById(req.body.id);
-    if (getId.error) {
-      deleteImages(req.file.path);
-      response(res, 401, getId, getId.error);
+    const cekId = await model.getCategoryById(req.body.id);
+    if (!cekId) {
+      deleteImages(pathImage);
+      response(res, 401, { message: 'category id not found' }, true);
     } else {
       const data = {
         id: req.body.id,
         name: req.body.name,
-        image: req.file.path,
+        image: pathImage,
       };
       const update = await model.updateCategory(data);
-      deleteImages(getId[0].image);
+      deleteImages(cekId.image);
       redisDb.del('category');
-      response(res, 200, update);
+      if (update > 0) {
+        response(res, 200, { message: 'edit category is success' });
+      } else {
+        response(res, 400, { message: 'edit category is error' }, true);
+      }
     }
   } catch (error) {
-    deleteImages(req.file.path);
+    deleteImages(pathImage);
     response(res, 400, error);
   }
 };
@@ -55,13 +65,18 @@ category.updateCategory = async (req, res) => {
 category.deleteCategory = async (req, res) => {
   try {
     const getId = await model.getCategoryById(req.params.id);
-    if (getId.error) {
-      response(res, 401, getId.message, getId.error);
+    if (!getId) {
+      response(res, 401, { message: 'category id not found!' }, true);
     } else {
-      const respons = await model.deleteCategory(req.params);
-      deleteImages(getId[0].image);
+      const respons = await model.deleteCategory(req.params.id);
+      deleteImages(getId.image);
       redisDb.del('category');
-      response(res, 200, respons);
+      redisDb.del('product');
+      if (respons > 0) {
+        response(res, 200, { message: 'category success to delete' });
+      } else {
+        response(res, 400, { message: 'category error to delete' }, true);
+      }
     }
   } catch (error) {
     response(res, 400, error);

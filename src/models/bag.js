@@ -1,89 +1,90 @@
-const bag = {};
-const db = require('../configs/db');
+/* eslint-disable max-len */
+const { DataTypes } = require('sequelize');
+const { sequelize } = require('../configs/db');
+const product = require('./product');
 
-bag.getAllBag = (user) => new Promise((resolve, reject) => {
-  db.query(`SELECT public.bag.*, public.product.title, public.product.price, public.product.store, public.product.image FROM public.bag INNER JOIN public.product ON public.bag.product_id = public.product.id WHERE public.bag.users = '${user}' ORDER BY create_at DESC`)
-    .then((res) => {
-      const json = res.rows.map((data) => {
-        const totalPrice = data.qty * data.price;
-        const object = {
+class Bag {
+  constructor() {
+    this.table = sequelize.define('bags', {
+      id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        autoIncrement: true,
+        primaryKey: true,
+      },
+      product_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'products',
+          key: 'id',
+        },
+      },
+      qty: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      user: {
+        type: DataTypes.STRING(128),
+        allowNull: false,
+      },
+    });
+    this.table.belongsTo(product.table, {
+      foreignKey: 'product_id',
+      as: 'product',
+      onDelete: 'CASCADE',
+    });
+  }
+
+  getAllBag(user) {
+    return new Promise((resolve, reject) => {
+      this.table.findAll({
+        where: { user },
+        order: [['updatedAt', 'DESC']],
+      })
+        .then((res) => resolve(res))
+        .catch((err) => reject(err));
+    });
+  }
+
+  getBagById(id) {
+    return new Promise((resolve, reject) => {
+      this.table.findByPk(id)
+        .then((res) => resolve(res))
+        .catch((err) => reject(err));
+    });
+  }
+
+  addBag(data) {
+    return new Promise((resolve, reject) => {
+      this.table.create(data)
+        .then((res) => resolve(res))
+        .catch((err) => reject(err));
+    });
+  }
+
+  updateBag(data) {
+    return new Promise((resolve, reject) => {
+      this.table.update(data, {
+        where: {
           id: data.id,
-          user: data.users,
-          product_id: data.product_id,
-          product_image: data.image,
-          product_title: data.title,
-          product_store: data.store,
-          product_price: data.price,
-          qty: data.qty,
-          total_price: totalPrice,
-          create_at: data.create_at,
-          update_at: data.update_at,
-        };
-        return object;
-      });
-      resolve(json);
-    })
-    .catch((err) => {
-      reject(err.message);
+        },
+      })
+        .then((res) => resolve(res))
+        .catch((err) => reject(err));
     });
-});
+  }
 
-bag.getBagById = (id) => new Promise((resolve, reject) => {
-  db.query('SELECT public.bag.*, public.product.title, public.product.price, public.product.store, public.product.image FROM public.bag INNER JOIN public.product ON public.bag.product_id = public.product.id WHERE public.bag.id=$1', [id])
-    .then((res) => {
-      if (res.rowCount) {
-        resolve(res.rows);
-      } else {
-        resolve({ error: true, message: 'Bag ID not found!' });
-      }
-    })
-    .catch((err) => {
-      reject(err.message);
+  deleteBag(id) {
+    return new Promise((resolve, reject) => {
+      this.table.destroy({
+        where: {
+          id,
+        },
+      }).then((res) => resolve(res))
+        .catch((err) => reject(err));
     });
-});
+  }
+}
 
-bag.addBag = (data) => new Promise((resolve, reject) => {
-  const { productId, qty, users } = data;
-  const createAt = new Date();
-  db.query('INSERT INTO public.bag (product_id, qty, users, create_at, update_at) VALUES($1,$2,$3,$4,$5)',
-    [productId, qty, users, createAt, createAt])
-    .then(((res) => {
-      if (res.rowCount) {
-        resolve({ message: 'New bag successfully added' });
-      } else {
-        resolve({ message: 'gagal' });
-      }
-    }))
-    .catch((err) => {
-      reject(err.message);
-    });
-});
-
-bag.updateBag = (data) => new Promise((resolve, reject) => {
-  const updateAt = new Date();
-  const { qty, id } = data;
-  db.query('UPDATE public.bag SET qty=$1, update_at=$2 WHERE id=$3',
-    [qty, updateAt, id])
-    .then((res) => {
-      if (res.rowCount) {
-        resolve({ message: 'Data successfully changed' });
-      }
-    })
-    .catch((err) => {
-      reject(err);
-    });
-});
-
-bag.deleteBag = (key) => new Promise((resolve, reject) => {
-  db.query('DELETE FROM public.bag WHERE id=$1', [key.id])
-    .then((res) => {
-      if (res.rowCount) {
-        resolve({ message: 'Data deleted successfully' });
-      }
-    })
-    .catch((err) => {
-      reject(err);
-    });
-});
-
-module.exports = bag;
+module.exports = new Bag();
