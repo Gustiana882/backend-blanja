@@ -1,11 +1,17 @@
-const user = {
-  name: 'user test',
+const userLogin = {
+  name: 'user',
   email: 'user@gmail.com',
   password: 'user123',
 };
 
+const user = {
+  name: 'user test',
+  email: 'usertest@gmail.com',
+  password: 'user123',
+};
+
 const product = {
-  id: 17, //
+  id: 32, //
   title: 'baju',
   category: 2,
   price: 10000,
@@ -15,19 +21,19 @@ const product = {
 };
 
 const category = {
-  id: 17, //
+  id: 32, //
   name: 'shose',
 };
 
 const bag = {
-  id: 11, //
+  id: 26, //
   productId: 1,
   qty: 3,
 };
 
 const image = {
-  path: 'public/images/product/2021-07-18T04:52:22.109Z-f2c747c5-1f63-4476-b1b9-d8aa8ace2ac2 2.png',
+  path: 'public/images/product/test (another copy).png',
 };
 module.exports = {
-  product, category, bag, user, image,
+  product, category, bag, user, image, userLogin,
 };

@@ -2,7 +2,7 @@
 /* eslint-disable no-undef */
 const requests = require('supertest');
 const app = require('../app');
-const { user } = require('./data_test');
+const { user, userLogin } = require('./data_test');
 
 describe('service register', () => {
   test('should return register success', async () => {
@@ -29,8 +29,8 @@ describe('service register', () => {
 describe('service login', () => {
   test('should return token jwt', async () => {
     const result = await requests(app).post('/login').send({
-      email: user.email,
-      password: user.password,
+      email: userLogin.email,
+      password: userLogin.password,
     });
     expect(result.statusCode).toBe(200);
     expect(result.body.data[0].message).toEqual(expect.stringContaining('login berhasil!'));
