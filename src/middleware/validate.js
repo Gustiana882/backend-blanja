@@ -1,7 +1,11 @@
+/* eslint-disable consistent-return */
 const jwt = require('jsonwebtoken');
 const respone = require('../helpers/response');
 
-const checkToken = (role) => (req, res, next) => {
+const validate = (role) => (req, res, next) => {
+  if (process.env.APP_STATUS === 'test') {
+    return next();
+  }
   const { token } = req.headers;
   if (!token) {
     respone(res, 401, { message: 'you are not login!' });
@@ -18,4 +22,4 @@ const checkToken = (role) => (req, res, next) => {
   }
 };
 
-module.exports = checkToken;
+module.exports = validate;

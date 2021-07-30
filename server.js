@@ -13,6 +13,7 @@ const run = async () => {
       console.log('Connection to db');
       console.log(msg);
       console.log(`Service running on port ${PORT}`);
+      console.log(process.env.APP_STATUS);
     });
   } catch (error) {
     console.log(error);

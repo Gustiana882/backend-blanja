@@ -1,6 +1,6 @@
 const auth = {};
 const bcr = require('bcrypt');
-const model = require('../models/auth');
+const model = require('../models/user');
 const response = require('../helpers/response');
 const hashPassword = require('../helpers/hash');
 const createToken = require('../helpers/token');

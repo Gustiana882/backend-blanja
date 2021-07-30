@@ -12,7 +12,27 @@ products.getAllProduct = async (req, res) => {
     // console.log(allProduct);
     response(res, 200, allProduct);
   } catch (error) {
-    response(res, 400, error, true);
+    response(res, 400, { message: error.message }, true);
+  }
+};
+
+products.getProductByName = async (req, res) => {
+  try {
+    let result;
+    if (req.params.id.match('[0-9]')) {
+      result = await model.getProductById(req.params.id);
+    } else {
+      result = await model.getProductByName(req.params.id);
+    }
+    redisDb.setex('product', 60, JSON.stringify(result));
+    // console.log(result);
+    if (!result) {
+      response(res, 200, { message: 'product not found' });
+    } else {
+      response(res, 200, [result]);
+    }
+  } catch (error) {
+    response(res, 400, { message: error.message }, true);
   }
 };
 

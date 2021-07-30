@@ -1,4 +1,4 @@
-const db = require('../configs/db');
+const { pool: db } = require('../configs/db');
 
 const profil = {};
 
@@ -15,7 +15,7 @@ profil.getUserByEmail = (email) => new Promise((resolve, reject) => {
 profil.editProfil = (data) => new Promise((resolve, reject) => {
   const time = new Date();
   const { email, name, image } = data;
-  db.query(`UPDATE public.users SET "name"=$1, image=$2, update_at=$3 WHERE email='${email}'`, [name, image, time])
+  db.query(`UPDATE public.users SET "name"=$1, image=$2, updatedAt=$3 WHERE email='${email}'`, [name, image, time])
     .then((res) => {
       resolve(res.rowCount);
     })
@@ -27,7 +27,7 @@ profil.editProfil = (data) => new Promise((resolve, reject) => {
 profil.editPassword = (data) => new Promise((resolve, reject) => {
   const time = new Date();
   const { email, password } = data;
-  db.query(`UPDATE public.users SET "password"=$1, update_at=$2 WHERE email='${email}'`, [password, time])
+  db.query(`UPDATE public.users SET "password"=$1, updatedAt=$2 WHERE email='${email}'`, [password, time])
     .then((res) => {
       resolve(res.rowCount);
     })

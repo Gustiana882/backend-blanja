@@ -10,7 +10,7 @@ category.getAllCategory = async (req, res) => {
     redisDb.setex('category', 60, JSON.stringify(allCategory));
     response(res, 200, allCategory);
   } catch (error) {
-    response(res, 400, error);
+    response(res, 400, { message: error.message }, true);
   }
 };
 

@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 /* eslint-disable array-callback-return */
 /* eslint-disable no-undef */
 const { appendFile, unlink, readdir } = require('fs');
@@ -40,6 +41,9 @@ const logSave = (data) => {
 const log = {};
 
 log.requests = (req, res, next) => {
+  if (process.env.APP_STATUS === 'test') {
+    return next();
+  }
   const dateTime = new Date();
   const date = dateTime.getDate();
   const hour = dateTime.getHours();

@@ -15,6 +15,7 @@ const sequelize = new Sequelize({
   password: process.env.DB_PASS,
   host: process.env.DB_HOST,
   dialect: 'postgres',
+  logging: false,
 });
 
 module.exports = { pool, sequelize };

@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../configs/db');
 
-class Auth {
+class User {
   constructor() {
     this.table = sequelize.define('users', {
       id: {
@@ -51,6 +51,30 @@ class Auth {
         .catch((err) => reject(err));
     });
   }
+
+  updateProfile(data) {
+    return new Promise((resolve, reject) => {
+      this.table.update(data, {
+        where: {
+          email: data.email,
+        },
+      })
+        .then((res) => resolve(res))
+        .catch((err) => reject(err));
+    });
+  }
+
+  resetPassword(data) {
+    return new Promise((resolve, reject) => {
+      this.table.update(data, {
+        where: {
+          email: data.email,
+        },
+      })
+        .then((res) => resolve(res))
+        .catch((err) => reject(err));
+    });
+  }
 }
 
-module.exports = new Auth();
+module.exports = new User();
