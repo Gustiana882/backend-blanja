@@ -12,7 +12,7 @@ class Product {
         autoIncrement: true,
         primaryKey: true,
       },
-      title: {
+      name: {
         type: DataTypes.STRING(128),
         allowNull: false,
       },
@@ -40,9 +40,16 @@ class Product {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
+      condition: {
+        type: DataTypes.STRING(100),
+        allowNull: false,
+      },
       image: {
         type: DataTypes.STRING(128),
         allowNull: false,
+      },
+      description: {
+        type: DataTypes.TEXT,
       },
     });
     this.table.belongsTo(category.table, {
@@ -91,7 +98,7 @@ class Product {
           attributes: ['name', 'id'],
         }],
         where: {
-          title: name,
+          name,
         },
       })
         .then((res) => resolve(res))
@@ -136,7 +143,7 @@ class Product {
         where: {
           [Op.or]: [
             {
-              title: {
+              name: {
                 [Op.like]: `%${key}%`,
               },
             },

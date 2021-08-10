@@ -7,16 +7,17 @@ const validate = (role) => (req, res, next) => {
     return next();
   }
   const { token } = req.headers;
+  // console.log(token);
   if (!token) {
-    respone(res, 401, { message: 'you are not login!' });
+    respone(res, 401, [], 'you are not login!', true);
   } else {
     jwt.verify(token, process.env.JWT_KEY, (err, decode) => {
       if (err) {
-        respone(res, 401, err, true);
+        respone(res, 401, [], err.message, true);
       } else if (role.find((array) => array === decode.roles)) {
         next();
       } else {
-        respone(res, 401, { message: 'access is not allowed' }, true);
+        respone(res, 401, [], 'access is not allowed', true);
       }
     });
   }

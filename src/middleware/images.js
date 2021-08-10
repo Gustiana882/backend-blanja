@@ -29,9 +29,9 @@ const images = (path) => (req, res, next) => {
   }).single('image');
   upload(req, res, (err) => {
     if (err instanceof multer.MulterError) {
-      response(res, 400, { message: err }, true);
+      response(res, 400, [], err.message, true);
     } else if (err) {
-      response(res, 400, { message: err }, true);
+      response(res, 400, [], err.message, true);
     } else {
       next();
     }

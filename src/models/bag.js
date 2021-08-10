@@ -41,6 +41,11 @@ class Bag {
       this.table.findAll({
         where: { user },
         order: [['updatedAt', 'DESC']],
+        include: [{
+          model: product.table,
+          as: 'product',
+          attributes: ['name', 'price', 'brand', 'image'],
+        }],
       })
         .then((res) => resolve(res))
         .catch((err) => reject(err));

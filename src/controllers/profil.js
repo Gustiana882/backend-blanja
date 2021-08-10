@@ -11,12 +11,12 @@ profil.getProfil = async (req, res) => {
     const decode = await decodeToken(req.headers.token);
     const cekEmail = await model.getUserByEmail(decode.user);
     if (cekEmail.length < 1) {
-      response(res, 400, { message: 'e-mail not registered!' }, true);
+      response(res, 400, [], 'e-mail not registered!', true);
     } else {
       response(res, 200, [cekEmail]);
     }
   } catch (error) {
-    response(res, 400, error.message, true);
+    response(res, 500, [], error.message, true);
   }
 };
 
@@ -27,22 +27,26 @@ profil.editProfil = async (req, res) => {
     const cekEmail = await model.getUserByEmail(decode.user);
     if (cekEmail.length < 1) {
       deleteImages(pathImage);
-      response(res, 400, { message: 'e-mail not registered!' }, true);
+      response(res, 400, [], 'e-mail not registered!', true);
     } else {
       const data = {
         email: decode.user,
         name: req.body.name,
         image: pathImage,
+        phone: req.body.phone,
+        address: req.body.address,
+        gender: req.body.gender || '',
+        dateBirth: req.body.dateBirth || '',
       };
       const result = await model.updateProfile(data);
       if (result > 0) {
         deleteImages(cekEmail.image);
-        response(res, 200, { message: 'edit profil success' });
+        response(res, 200, [], 'edit profil success');
       }
     }
   } catch (error) {
     deleteImages(pathImage);
-    response(res, 400, { message: error.message }, true);
+    response(res, 500, [], error.message, true);
   }
 };
 
@@ -51,7 +55,7 @@ profil.editPassword = async (req, res) => {
     const decode = await decodeToken(req.headers.token);
     const cekEmail = await model.getUserByEmail(decode.user);
     if (cekEmail.length < 1) {
-      response(res, 401, { message: 'e-mail not registered!' }, true);
+      response(res, 401, [], 'e-mail not registered!', true);
     } else {
       const cekPass = await bcr.compare(req.body.oldPassword, cekEmail.password);
       if (cekPass) {
@@ -61,14 +65,14 @@ profil.editPassword = async (req, res) => {
         };
         const result = await model.resetPassword(data);
         if (result > 0) {
-          response(res, 200, { message: 'edit password success' });
+          response(res, 200, [], 'edit password success');
         }
       } else {
-        response(res, 401, { message: 'error password wrong!' }, true);
+        response(res, 401, [], 'error password wrong!', true);
       }
     }
   } catch (error) {
-    response(res, 400, error.message);
+    response(res, 500, [], error.message);
   }
 };
 

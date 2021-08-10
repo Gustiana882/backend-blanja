@@ -12,24 +12,26 @@ auth.register = async (req, res) => {
     const cekEmail = await model.getUserByEmail(req.body.email);
     if (cekEmail) {
       deleteImages(pathImage);
-      response(res, 400, { message: 'e-mail already registered' }, true);
+      response(res, 400, [], 'e-mail already registered', true);
     } else {
       const data = {
         name: req.body.name,
         email: req.body.email,
+        phone: req.body.phone,
         password: await hashPassword(req.body.password),
-        roles: 'admin',
+        roles: 'user',
         image: pathImage,
+        address: req.body.address,
       };
       const register = await model.register(data);
       if (register) {
-        response(res, 200, { message: 'register success' });
+        response(res, 200, [], 'register success');
       } else {
-        response(res, 400, { message: 'register gagal' }, true);
+        response(res, 400, [], 'register gagal', true);
       }
     }
   } catch (error) {
-    response(res, 400, error.message);
+    response(res, 500, [], error.message, true);
   }
 };
 
@@ -37,21 +39,18 @@ auth.login = async (req, res) => {
   try {
     const cekEmail = await model.getUserByEmail(req.body.email);
     if (!cekEmail) {
-      response(res, 400, { message: 'e-mail not registered!' }, true);
+      response(res, 200, [], 'e-mail not registered!', true);
     } else {
       const cekPass = await bcr.compare(req.body.password, cekEmail.password);
       if (cekPass) {
         const token = await createToken(cekEmail.email, cekEmail.roles);
-        response(res, 200, {
-          message: 'login berhasil!',
-          token_key: token,
-        });
+        response(res, 200, { token_key: token, image: cekEmail.image }, 'login berhasil!');
       } else {
-        response(res, 400, { message: 'error login gagal!' }, true);
+        response(res, 200, [], 'login gagal!', true);
       }
     }
   } catch (error) {
-    response(res, 400, error.message);
+    response(res, 500, [], error.message, true);
   }
 };
 

@@ -11,6 +11,16 @@ const userData = {
   name: 'test',
   email: 'emailTest@gmail.com',
   password: 'test1234',
+  phone: '08787555432',
+  address: '',
+};
+
+const standarResponse = {
+  statusCode: expect.any(Number),
+  description: expect.any(String),
+  isError: expect.any(Boolean),
+  message: expect.any(String),
+  data: expect.any(Array),
 };
 
 /**
@@ -27,7 +37,7 @@ const standarCategory = {
 
 const standarProduct = {
   id: expect.any(Number),
-  title: expect.any(String),
+  name: expect.any(String),
   price: expect.any(Number),
   brand: expect.any(String),
   categories: expect.objectContaining({
@@ -37,8 +47,40 @@ const standarProduct = {
   star: expect.any(Number),
   review: expect.any(Number),
   image: expect.any(String),
+  description: expect.any(String),
+  condition: expect.any(String),
   createdAt: expect.any(String),
   updatedAt: expect.any(String),
+};
+
+const standarBag = {
+  id: expect.any(Number),
+  product_id: expect.any(Number),
+  qty: expect.any(Number),
+  user: expect.any(String),
+  createdAt: expect.any(String),
+  updatedAt: expect.any(String),
+  product: {
+    name: expect.any(String),
+    price: expect.any(Number),
+    brand: expect.any(String),
+    image: expect.any(String),
+  },
+};
+
+const standarProfile = {
+  id: expect.any(Number),
+  name: expect.any(String),
+  email: expect.any(String),
+  phone: expect.any(String),
+  image: expect.any(String),
+  password: expect.any(String),
+  address: expect.any(String),
+  gender: expect.any(String),
+  dateBirth: expect.any(String),
+  roles: expect.any(String),
+  updatedAt: expect.any(String),
+  createdAt: expect.any(String),
 };
 
 const createDataBase = async () => {
@@ -58,8 +100,10 @@ describe('TEST CRUD REQUEST', () => {
         name: userData.name,
         email: userData.email,
         password: userData.password,
+        address: userData.address,
+        phone: userData.phone,
       });
-      expect(result.body.data[0].message).toEqual(expect.stringContaining('register success'));
+      expect(result.body.message).toEqual(expect.stringContaining('register success'));
       expect(result.statusCode).toBe(200);
     });
 
@@ -68,9 +112,11 @@ describe('TEST CRUD REQUEST', () => {
         name: userData.name,
         email: userData.email,
         password: userData.password,
+        address: userData.address,
+        phone: userData.phone,
       });
       expect(result.statusCode).toBe(400);
-      expect(result.body.data[0].message).toEqual(expect.stringContaining('e-mail already registered'));
+      expect(result.body.message).toEqual(expect.stringContaining('e-mail already registered'));
     });
   });
   /**
@@ -84,7 +130,7 @@ describe('TEST CRUD REQUEST', () => {
       });
       token = result.body.data[0].token_key;
       expect(result.statusCode).toBe(200);
-      expect(result.body.data[0].message).toEqual(expect.stringContaining('login berhasil!'));
+      expect(result.body.message).toEqual(expect.stringContaining('login berhasil!'));
       expect(result.body.data[0].token_key).toEqual(expect.stringContaining('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9'));
     });
   });
@@ -121,7 +167,7 @@ describe('TEST CRUD REQUEST', () => {
             id: 1,
             name: 'baju-muslim',
           });
-        expect(respone.body.data[0].message).toEqual(expect.stringContaining('edit category is success'));
+        expect(respone.body.message).toEqual(expect.stringContaining('edit category is success'));
         expect(respone.statusCode).toBe(200);
       });
     });
@@ -141,7 +187,7 @@ describe('TEST CRUD REQUEST', () => {
         const respone = await requests(app)
           .delete('/product/category/2')
           .set('token', token);
-        expect(respone.body.data[0].message).toEqual(expect.stringContaining('category success to delete'));
+        expect(respone.body.message).toEqual(expect.stringContaining('category success to delete'));
         expect(respone.statusCode).toBe(200);
       });
     });
@@ -157,12 +203,7 @@ describe('TEST CRUD REQUEST', () => {
       });
       test('should return response standar', async () => {
         const respone = await requests(app).get('/product/category');
-        expect(respone.body).toMatchObject({
-          status: expect.any(Number),
-          description: expect.any(String),
-          isError: expect.any(Boolean),
-          data: expect.any(Array),
-        });
+        expect(respone.body).toMatchObject(standarResponse);
       });
       test('should return response standar data category', async () => {
         const respone = await requests(app).get('/product/category');
@@ -186,12 +227,14 @@ describe('TEST CRUD REQUEST', () => {
           .post('/product')
           .set('token', token)
           .send({
-            title: 'baju',
+            name: 'baju',
             category: 1,
             price: 10000,
             brand: 'toko kami',
             review: 21,
             star: 4,
+            condition: 'New',
+            description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita, voluptatum? Lorem ipsum, dolor sit amet consectetur adipisicing elit.Nulla alias assumenda quam iste repellendus, dicta consequatur aperiam quod quos officiis mollitia numquam praesentium repellat provident quas perferendis hic ullam.Voluptate expedita tempora voluptatum velit.Sit voluptas magni unde, laborum totam nisi ab, laudantium suscipit nobis, voluptatibus tenetur odit eligendi pariatur? Lorem ipsum dolor sit amet consectetur adipisicing elit.Quia consequatur possimus, enim deleniti asperiores, fugit odit praesentium ipsam accusantium perspiciatis quod voluptatum aut libero.Esse unde eos eligendi possimus corporis quidem, aut sed accusantium alias! Molestias suscipit nostrum tenetur, autem sint totam dolor odit officiis ducimus mollitia deserunt quidem quisquam. Lorem ipsum, dolor sit amet consectetur adipisicing elit.Reprehenderit, quaerat!',
           });
         expect(respone.statusCode).toBe(200);
       });
@@ -208,14 +251,16 @@ describe('TEST CRUD REQUEST', () => {
           .set('token', token)
           .send({
             id: 1,
-            title: 'baju',
+            name: 'baju',
             category: 1,
             price: 10000,
             brand: 'toko kami',
             review: 21,
             star: 4,
+            condition: 'New',
+            description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita, voluptatum? Lorem ipsum, dolor sit amet consectetur adipisicing elit.Nulla alias assumenda quam iste repellendus, dicta consequatur aperiam quod quos officiis mollitia numquam praesentium repellat provident quas perferendis hic ullam.Voluptate expedita tempora voluptatum velit.Sit voluptas magni unde, laborum totam nisi ab, laudantium suscipit nobis, voluptatibus tenetur odit eligendi pariatur? Lorem ipsum dolor sit amet consectetur adipisicing elit.Quia consequatur possimus, enim deleniti asperiores, fugit odit praesentium ipsam accusantium perspiciatis quod voluptatum aut libero.Esse unde eos eligendi possimus corporis quidem, aut sed accusantium alias! Molestias suscipit nostrum tenetur, autem sint totam dolor odit officiis ducimus mollitia deserunt quidem quisquam. Lorem ipsum, dolor sit amet consectetur adipisicing elit.Reprehenderit, quaerat!',
           });
-        expect(respone.body.data[0].message).toEqual(expect.stringContaining('data updated'));
+        expect(respone.body.message).toEqual(expect.stringContaining('data updated'));
         expect(respone.statusCode).toBe(200);
       });
     });
@@ -231,17 +276,19 @@ describe('TEST CRUD REQUEST', () => {
           .post('/product')
           .set('token', token)
           .send({
-            title: 'baju',
+            name: 'baju',
             category: 1,
             price: 10000,
             brand: 'toko kami',
             review: 21,
             star: 4,
+            condition: 'New',
+            description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita, voluptatum? Lorem ipsum, dolor sit amet consectetur adipisicing elit.Nulla alias assumenda quam iste repellendus, dicta consequatur aperiam quod quos officiis mollitia numquam praesentium repellat provident quas perferendis hic ullam.Voluptate expedita tempora voluptatum velit.Sit voluptas magni unde, laborum totam nisi ab, laudantium suscipit nobis, voluptatibus tenetur odit eligendi pariatur? Lorem ipsum dolor sit amet consectetur adipisicing elit.Quia consequatur possimus, enim deleniti asperiores, fugit odit praesentium ipsam accusantium perspiciatis quod voluptatum aut libero.Esse unde eos eligendi possimus corporis quidem, aut sed accusantium alias! Molestias suscipit nostrum tenetur, autem sint totam dolor odit officiis ducimus mollitia deserunt quidem quisquam. Lorem ipsum, dolor sit amet consectetur adipisicing elit.Reprehenderit, quaerat!',
           });
         const respone = await requests(app)
           .delete('/product/2')
           .set('token', token);
-        expect(respone.body.data[0].message).toEqual(expect.stringContaining('data success to delete'));
+        expect(respone.body.message).toEqual(expect.stringContaining('data success to delete'));
         expect(respone.statusCode).toBe(200);
       });
     });
@@ -256,12 +303,7 @@ describe('TEST CRUD REQUEST', () => {
       });
       test('should return response object', async () => {
         const respone = await requests(app).get('/product');
-        expect(respone.body).toMatchObject({
-          status: expect.any(Number),
-          description: expect.any(String),
-          isError: expect.any(Boolean),
-          data: expect.any(Array),
-        });
+        expect(respone.body).toMatchObject(standarResponse);
       });
       test('should return response standar response data product', async () => {
         const respone = await requests(app).get('/product');
@@ -280,12 +322,7 @@ describe('TEST CRUD REQUEST', () => {
       });
       test('should return response object', async () => {
         const respone = await requests(app).get('/product/1');
-        expect(respone.body).toMatchObject({
-          status: expect.any(Number),
-          description: expect.any(String),
-          isError: expect.any(Boolean),
-          data: expect.any(Array),
-        });
+        expect(respone.body).toMatchObject(standarResponse);
       });
       test('should return response standar response data product', async () => {
         const respone = await requests(app).get('/product/1');
@@ -307,12 +344,7 @@ describe('TEST CRUD REQUEST', () => {
       });
       test('should return response object', async () => {
         const respone = await requests(app).get('/product/baju');
-        expect(respone.body).toMatchObject({
-          status: expect.any(Number),
-          description: expect.any(String),
-          isError: expect.any(Boolean),
-          data: expect.any(Array),
-        });
+        expect(respone.body).toMatchObject(standarResponse);
       });
       test('should return response standar response data product', async () => {
         const respone = await requests(app).get('/product/baju');
@@ -324,7 +356,7 @@ describe('TEST CRUD REQUEST', () => {
       });
       test('should return response product not found if user wrong input url', async () => {
         const respone = await requests(app).get('/product/baja');
-        expect(respone.body.data[0].message).toEqual(expect.stringContaining('product not found'));
+        expect(respone.body.message).toEqual(expect.stringContaining('product not found'));
       });
     });
   });
@@ -362,10 +394,9 @@ describe('TEST CRUD REQUEST', () => {
           .set('token', token)
           .send({
             id: 1,
-            productId: 1,
             qty: 3,
           });
-        expect(respone.body.data[0].message).toEqual(expect.stringContaining('update data bag success'));
+        expect(respone.body.message).toEqual(expect.stringContaining('update data bag success'));
         expect(respone.statusCode).toBe(200);
       });
     });
@@ -385,9 +416,9 @@ describe('TEST CRUD REQUEST', () => {
             qty: 2,
           });
         const respone = await requests(app)
-          .delete('/bag/2')
+          .delete('/bag/1')
           .set('token', token);
-        expect(respone.body.data[0].message).toEqual(expect.stringContaining('delete data bag success'));
+        expect(respone.body.message).toEqual(expect.stringContaining('delete data bag success'));
         expect(respone.statusCode).toBe(200);
       });
     });
@@ -398,16 +429,20 @@ describe('TEST CRUD REQUEST', () => {
 
     describe('GET requests', () => {
       test('should return response status code 200', async () => {
+        await requests(app)
+          .post('/bag')
+          .set('token', token)
+          .send({
+            productId: 1,
+            qty: 2,
+          });
         const respone = await requests(app)
           .get('/bag')
           .set('token', token);
         expect(respone.statusCode).toBe(200);
-        expect(respone.body).toMatchObject({
-          status: expect.any(Number),
-          description: expect.any(String),
-          isError: expect.any(Boolean),
-          data: expect.any(Array),
-        });
+        expect(respone.body).toMatchObject(standarResponse);
+        expect(respone.body.data[0]).toEqual(expect.objectContaining(standarBag));
+        // expect(respone.body.product).toMatchObject({  });
       });
     });
   });
@@ -438,7 +473,7 @@ describe('TEST CRUD REQUEST', () => {
           .send({
             name: 'useredit',
           });
-        expect(respone.body.data[0].message).toEqual(expect.stringContaining('edit profil success'));
+        expect(respone.body.message).toEqual(expect.stringContaining('edit profil success'));
       });
     });
 
@@ -465,7 +500,7 @@ describe('TEST CRUD REQUEST', () => {
             oldPassword: userData.password,
             newPassword: userData.password,
           });
-        expect(respone.body.data[0].message).toEqual(expect.stringContaining('edit password success'));
+        expect(respone.body.message).toEqual(expect.stringContaining('edit password success'));
       });
       test('should return response error password wrong! if input oldPaswword wrong', async () => {
         const respone = await requests(app)
@@ -476,7 +511,7 @@ describe('TEST CRUD REQUEST', () => {
             newPassword: userData.password,
           });
         expect(respone.statusCode).toBe(401);
-        expect(respone.body.data[0].message).toEqual(expect.stringContaining('error password wrong!'));
+        expect(respone.body.message).toEqual(expect.stringContaining('error password wrong!'));
       });
     });
 
@@ -495,12 +530,13 @@ describe('TEST CRUD REQUEST', () => {
         const respone = await requests(app)
           .get('/profile')
           .set('token', token);
-        expect(respone.body).toMatchObject({
-          status: expect.any(Number),
-          description: expect.any(String),
-          isError: expect.any(Boolean),
-          data: expect.any(Array),
-        });
+        expect(respone.body).toMatchObject(standarResponse);
+      });
+      test('should return response standar data', async () => {
+        const respone = await requests(app)
+          .get('/profile')
+          .set('token', token);
+        expect(respone.body.data[0]).toMatchObject(standarProfile);
       });
     });
   });

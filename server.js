@@ -2,7 +2,7 @@ const server = require('./app');
 const { sequelize } = require('./src/configs/db');
 const redis = require('./src/configs/redis');
 
-const PORT = 3000;
+const PORT = 9000;
 
 const run = async () => {
   try {
