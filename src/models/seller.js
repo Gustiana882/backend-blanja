@@ -1,9 +1,9 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../configs/db');
 
-class User {
+class Seller {
   constructor() {
-    this.table = sequelize.define('users', {
+    this.table = sequelize.define('sellers', {
       id: {
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -18,28 +18,24 @@ class User {
         type: DataTypes.STRING(128),
         allowNull: false,
       },
-      phone: {
-        type: DataTypes.STRING,
+      store: {
+        type: DataTypes.STRING(128),
         allowNull: false,
       },
-      address: {
-        type: DataTypes.STRING,
-        allowNull: true,
-      },
-      gender: {
-        type: DataTypes.STRING,
-        allowNull: true,
-      },
-      dateBirth: {
-        type: DataTypes.STRING,
-        allowNull: true,
+      phone: {
+        type: DataTypes.STRING(128),
+        allowNull: false,
       },
       password: {
         type: DataTypes.STRING,
         allowNull: false,
       },
+      description: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+      },
       image: {
-        type: DataTypes.STRING(128),
+        type: DataTypes.STRING,
         allowNull: false,
       },
       roles: {
@@ -57,7 +53,7 @@ class User {
     });
   }
 
-  getUserByEmail(email) {
+  getSellerByEmail(email) {
     return new Promise((resolve, reject) => {
       this.table.findOne({
         where: {
@@ -93,4 +89,4 @@ class User {
   }
 }
 
-module.exports = new User();
+module.exports = new Seller();

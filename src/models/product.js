@@ -2,6 +2,8 @@
 const { DataTypes, Op } = require('sequelize');
 const { sequelize } = require('../configs/db');
 const category = require('./category');
+const score = require('./scoresProduct');
+const stock = require('./stockProduct');
 
 class Product {
   constructor() {
@@ -32,24 +34,20 @@ class Product {
         type: DataTypes.STRING(128),
         allowNull: false,
       },
-      review: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-      },
-      star: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-      },
       condition: {
         type: DataTypes.STRING(100),
         allowNull: false,
+      },
+      description: {
+        type: DataTypes.TEXT,
       },
       image: {
         type: DataTypes.STRING(128),
         allowNull: false,
       },
-      description: {
-        type: DataTypes.TEXT,
+      id_user: {
+        type: DataTypes.STRING(128),
+        allowNull: false,
       },
     });
     this.table.belongsTo(category.table, {
@@ -57,17 +55,55 @@ class Product {
       as: 'categories',
       onDelete: 'CASCADE',
     });
+    this.table.hasMany(score.table, {
+      foreignKey: 'id_product',
+      onDelete: 'CASCADE',
+    });
+    this.table.hasMany(stock.table, {
+      foreignKey: 'id_product',
+      onDelete: 'CASCADE',
+    });
+  }
+
+  getAllMyProduct(idUser) {
+    return new Promise((resolve, reject) => {
+      this.table.findAll({
+        include: [
+          {
+            model: category.table,
+            as: 'categories',
+          },
+          {
+            model: score.table,
+          },
+          {
+            model: stock.table,
+          },
+        ],
+        where: {
+          id_user: idUser,
+        },
+      })
+        .then((res) => resolve(res))
+        .catch((err) => reject(err));
+    });
   }
 
   getAllProduct(column = 'updatedAt', short = 'DESC') {
     return new Promise((resolve, reject) => {
       this.table.findAll({
-        include: [{
-          model: category.table,
-          as: 'categories',
-          attributes: ['name', 'id'],
-        }],
-        attributes: { exclude: ['category_id'] },
+        include: [
+          {
+            model: category.table,
+            as: 'categories',
+          },
+          {
+            model: score.table,
+          },
+          {
+            model: stock.table,
+          },
+        ],
         order: [[column, short]],
       })
         .then((res) => resolve(res))

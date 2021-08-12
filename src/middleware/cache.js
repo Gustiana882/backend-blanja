@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 /* eslint-disable no-else-return */
 /* eslint-disable no-console */
 /* eslint-disable no-undef */
@@ -5,6 +6,9 @@ const response = require('../helpers/response');
 const { redisDb } = require('../configs/redis');
 
 const getAll = (key) => (req, res, next) => {
+  if (process.env.APP_STATUS === 'test') {
+    return next();
+  }
   redisDb.get(key, (err, data) => {
     if (err) {
       return response(res, 500, err, true);

@@ -59,6 +59,9 @@ log.requests = (req, res, next) => {
 
 log.response = (props) => {
   logSave(`${logreq} | ${props}\n`);
+  if (process.env.APP_STATUS === 'test') {
+    return;
+  }
   return console.log(`${logreq} | ${props}`);
 };
 

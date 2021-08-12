@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const respone = require('../helpers/response');
 
 const validate = (role) => (req, res, next) => {
-  if (process.env.APP_STATUS === 'test') {
+  if (process.env.APP_STATUS === 'on') {
     return next();
   }
   const { token } = req.headers;

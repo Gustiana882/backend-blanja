@@ -1,18 +1,66 @@
+/* eslint-disable array-callback-return */
 /* eslint-disable consistent-return */
 const products = {};
 const model = require('../models/product');
+const seller = require('../models/seller');
 const categorymodel = require('../models/category');
 const response = require('../helpers/response');
 const { redisDb } = require('../configs/redis');
 const deleteImages = require('../helpers/delete_images');
 const nullValidator = require('../helpers/null_validator');
+const decodeToken = require('../helpers/decode_token');
 
 products.getAllProduct = async (req, res) => {
   try {
     const allProduct = await model.getAllProduct();
     redisDb.setex('product', 60, JSON.stringify(allProduct));
-    // console.log(allProduct);
-    response(res, 200, allProduct);
+    const result = allProduct.map((value) => {
+      const data = {
+        id: value.id,
+        name: value.name,
+        price: value.price,
+        brand: value.brand,
+        categories: value.categories.name,
+        score: value.scores,
+        stock: value.stocks.stock || 0,
+        image: value.image,
+        description: value.description,
+        condition: value.condition,
+        createdAt: value.createdAt,
+        updatedAt: value.updatedAt,
+      };
+      return data;
+    });
+    response(res, 200, result);
+  } catch (error) {
+    response(res, 400, [], error.message, true);
+  }
+};
+
+products.getAllMyProduct = async (req, res) => {
+  try {
+    const decode = await decodeToken(req.headers.token);
+    const allProduct = await model.getAllProduct(decode.user);
+    redisDb.setex('product', 60, JSON.stringify(allProduct));
+    const result = allProduct.map((value) => {
+      const data = {
+        id: value.id,
+        name: value.name,
+        price: value.price,
+        brand: value.brand,
+        categories: value.categories.name,
+        score: value.scores,
+        stock: value.stocks.stock || 0,
+        image: value.image,
+        description: value.description,
+        condition: value.condition,
+        createdAt: value.createdAt,
+        updatedAt: value.updatedAt,
+      };
+      return data;
+    });
+    // console.log(result)
+    response(res, 200, result);
   } catch (error) {
     response(res, 400, [], error.message, true);
   }
@@ -26,8 +74,7 @@ products.getProductByName = async (req, res) => {
     } else {
       result = await model.getProductByName(req.params.id);
     }
-    // redisDb.setex('product', 60, JSON.stringify(result));
-    // console.log(result);
+
     if (!result) {
       response(res, 200, [], 'product not found');
     } else {
@@ -42,32 +89,40 @@ products.getProductByName = async (req, res) => {
 products.addProduct = async (req, res) => {
   const pathImage = (req.file) ? req.file.path : 'public/images/blank.jpg';
   try {
+    const decode = await decodeToken(req.headers.token);
+    const cekEmail = await seller.getSellerByEmail(decode.user);
+    if (cekEmail.length < 1 && decode.roles !== 'seller') {
+      return response(res, 200, [], 'Access denied!', true);
+    }
+
     if (!nullValidator(req.body)) {
       return response(res, 200, [], 'check the input data is not empty', true);
     }
+
     const category = await categorymodel.getCategoryById(req.body.category);
     if (!category) {
       deleteImages(pathImage);
-      response(res, 200, [], 'category not found', true);
+      return response(res, 200, [], 'category not found', true);
+    }
+
+    const data = {
+      name: req.body.name,
+      category_id: req.body.category,
+      price: req.body.price,
+      brand: req.body.brand,
+      review: req.body.review,
+      star: req.body.star,
+      condition: req.body.condition,
+      description: req.body.description,
+      image: pathImage,
+      id_user: decode.user,
+    };
+    const respons = await model.addProduct(data);
+    redisDb.del('product');
+    if (respons) {
+      response(res, 200, [], 'add product is success');
     } else {
-      const data = {
-        name: req.body.name,
-        category_id: req.body.category,
-        price: req.body.price,
-        brand: req.body.brand,
-        review: req.body.review,
-        star: req.body.star,
-        condition: req.body.condition,
-        image: pathImage,
-        description: req.body.description,
-      };
-      const respons = await model.addProduct(data);
-      redisDb.del('product');
-      if (respons) {
-        response(res, 200, [], 'add product is success');
-      } else {
-        response(res, 200, [], 'add product is error', true);
-      }
+      response(res, 200, [], 'add product is error', true);
     }
   } catch (error) {
     deleteImages(pathImage);
@@ -78,36 +133,43 @@ products.addProduct = async (req, res) => {
 products.updateProduct = async (req, res) => {
   const pathImage = (req.file) ? req.file.path : 'public/images/blank.jpg';
   try {
+    const decode = await decodeToken(req.headers.token);
+    const cekEmail = await seller.getSellerByEmail(decode.user);
+    if (cekEmail.length < 1 && decode.roles !== 'seller') {
+      return response(res, 200, [], 'Access denied!', true);
+    }
+
     if (!nullValidator(req.body)) {
       return response(res, 200, [], 'check the input data is not empty', true);
     }
+
     const cekid = await model.getProductById(req.body.id);
     if (!cekid) {
       deleteImages(pathImage);
-      response(res, 200, [], 'id not found!', true);
+      return response(res, 200, [], 'id not found!', true);
+    }
+
+    const data = {
+      id_product: req.body.id,
+      name: req.body.name,
+      category_id: req.body.category,
+      price: req.body.price,
+      brand: req.body.brand,
+      review: req.body.review,
+      star: req.body.star,
+      condition: req.body.condition,
+      image: (req.file) ? req.file.path : cekid.image,
+      description: req.body.description || 'no description',
+    };
+    const respons = await model.updateProduct(data);
+    if (req.file) {
+      deleteImages(cekid.image);
+    }
+    redisDb.del('product');
+    if (respons > 0) {
+      response(res, 200, [], 'data updated');
     } else {
-      const data = {
-        id_product: req.body.id,
-        name: req.body.name,
-        category_id: req.body.category,
-        price: req.body.price,
-        brand: req.body.brand,
-        review: req.body.review,
-        star: req.body.star,
-        condition: req.body.condition,
-        image: (req.file) ? req.file.path : cekid.image,
-        description: req.body.description || 'no description',
-      };
-      const respons = await model.updateProduct(data);
-      if (req.file) {
-        deleteImages(cekid.image);
-      }
-      redisDb.del('product');
-      if (respons > 0) {
-        response(res, 200, [], 'data updated');
-      } else {
-        response(res, 200, [], 'data gagal updated', true);
-      }
+      response(res, 200, [], 'data gagal updated', true);
     }
   } catch (error) {
     deleteImages(pathImage);
@@ -117,18 +179,24 @@ products.updateProduct = async (req, res) => {
 
 products.deleteProduct = async (req, res) => {
   try {
+    const decode = await decodeToken(req.headers.token);
+    const cekEmail = await seller.getSellerByEmail(decode.user);
+    if (cekEmail.length < 1 && decode.roles !== 'seller') {
+      return response(res, 200, [], 'Access denied!', true);
+    }
+
     const cekid = await model.getProductById(req.params.id);
     if (!cekid) {
-      response(res, 200, [], 'id not found!', true);
+      return response(res, 200, [], 'id not found!', true);
+    }
+
+    const respons = await model.deleteProduct(req.params.id);
+    deleteImages(cekid.image);
+    redisDb.del('product');
+    if (respons > 0) {
+      response(res, 200, [], 'data success to delete');
     } else {
-      const respons = await model.deleteProduct(req.params.id);
-      deleteImages(cekid.image);
-      redisDb.del('product');
-      if (respons > 0) {
-        response(res, 200, [], 'data success to delete');
-      } else {
-        response(res, 200, [], 'data failed to delete', true);
-      }
+      response(res, 200, [], 'data failed to delete', true);
     }
   } catch (error) {
     response(res, 500, [], error.message, true, true);
@@ -158,8 +226,8 @@ products.fiter = async (req, res) => {
     if (price === 'ASC' || price === 'DESC') {
       filter = await model.getAllProduct('price', price);
     }
-    if (category) {
-      filter = filter.filter((product) => product.category[0].name === category);
+    if (category && category !== 'All') {
+      filter = filter.filter((product) => product.categories.name === category);
     }
     response(res, 200, filter);
   } catch (error) {
