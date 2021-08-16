@@ -17,6 +17,7 @@ route.get('/filter', controller.fiter);
 
 route.get('/my-product', validate(['seller']), controller.getAllMyProduct);
 route.get('/', redis('product'), controller.getAllProduct);
+route.put('/edit-stock', validate(['seller']), controller.editStock);
 route.post('/', validate(['seller']), images('product'), controller.addProduct);
 route.put('/', validate(['seller']), images('product'), controller.updateProduct);
 route.delete('/:id', validate(['seller']), controller.deleteProduct);

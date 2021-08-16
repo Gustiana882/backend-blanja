@@ -9,6 +9,7 @@ const { redisDb } = require('../configs/redis');
 const deleteImages = require('../helpers/delete_images');
 const nullValidator = require('../helpers/null_validator');
 const decodeToken = require('../helpers/decode_token');
+const stockData = require('../models/stockProduct');
 
 products.getAllProduct = async (req, res) => {
   try {
@@ -40,8 +41,7 @@ products.getAllProduct = async (req, res) => {
 products.getAllMyProduct = async (req, res) => {
   try {
     const decode = await decodeToken(req.headers.token);
-    const allProduct = await model.getAllProduct(decode.user);
-    redisDb.setex('product', 60, JSON.stringify(allProduct));
+    const allProduct = await model.getAllMyProduct(decode.user);
     const result = allProduct.map((value) => {
       const data = {
         id: value.id,
@@ -53,13 +53,13 @@ products.getAllMyProduct = async (req, res) => {
         stock: value.stocks.stock || 0,
         image: value.image,
         description: value.description,
+        idUser: value.id_user,
         condition: value.condition,
         createdAt: value.createdAt,
         updatedAt: value.updatedAt,
       };
       return data;
     });
-    // console.log(result)
     response(res, 200, result);
   } catch (error) {
     response(res, 400, [], error.message, true);
@@ -116,16 +116,41 @@ products.addProduct = async (req, res) => {
       description: req.body.description,
       image: pathImage,
       id_user: decode.user,
+      stock: req.body.stock || 0,
     };
-    const respons = await model.addProduct(data);
+    const resultId = await model.addProduct(data);
+    const result = await stockData.addStock({ id_product: resultId.id, stock: data.stock });
     redisDb.del('product');
-    if (respons) {
+    if (result) {
       response(res, 200, [], 'add product is success');
     } else {
       response(res, 200, [], 'add product is error', true);
     }
   } catch (error) {
     deleteImages(pathImage);
+    response(res, 500, [], error.message, true);
+  }
+};
+
+products.editStock = async (req, res) => {
+  try {
+    const cekid = await stockData.getStockById(req.body.id);
+    if (!cekid) {
+      return response(res, 200, [], 'stock not found', true);
+    }
+
+    const data = {
+      id: req.body.id,
+      id_product: req.body.id_product,
+      stock: req.body.stock,
+    };
+
+    const result = await stockData.editStock(data);
+    if (result > 0) {
+      return response(res, 200, [], 'data updated');
+    }
+    response(res, 200, [], 'data gagal updated', true);
+  } catch (error) {
     response(res, 500, [], error.message, true);
   }
 };
@@ -162,9 +187,11 @@ products.updateProduct = async (req, res) => {
       description: req.body.description || 'no description',
     };
     const respons = await model.updateProduct(data);
+
     if (req.file) {
       deleteImages(cekid.image);
     }
+
     redisDb.del('product');
     if (respons > 0) {
       response(res, 200, [], 'data updated');

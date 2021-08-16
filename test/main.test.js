@@ -420,6 +420,7 @@ describe('POST Product add product from seller', () => {
         price: 10000,
         brand: 'toko kami',
         condition: 'New',
+        stock: 10,
         description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita, voluptatum? Lorem ipsum, dolor sit amet consectetur adipisicing elit.Nulla alias assumenda quam iste repellendus, dicta consequatur aperiam quod quos officiis mollitia numquam praesentium repellat provident quas perferendis hic ullam.Voluptate expedita tempora voluptatum velit.Sit voluptas magni unde, laborum totam nisi ab, laudantium suscipit nobis, voluptatibus tenetur odit eligendi pariatur? Lorem ipsum dolor sit amet consectetur adipisicing elit.Quia consequatur possimus, enim deleniti asperiores, fugit odit praesentium ipsam accusantium perspiciatis quod voluptatum aut libero.Esse unde eos eligendi possimus corporis quidem, aut sed accusantium alias! Molestias suscipit nostrum tenetur, autem sint totam dolor odit officiis ducimus mollitia deserunt quidem quisquam. Lorem ipsum, dolor sit amet consectetur adipisicing elit.Reprehenderit, quaerat!',
       });
     expect(respone.statusCode).toBe(200);
@@ -435,6 +436,7 @@ describe('POST Product add product from seller', () => {
         price: 190000,
         brand: 'toko kami',
         condition: 'New',
+        stock: 10,
         description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita, voluptatum? Lorem ipsum, dolor sit amet consectetur adipisicing elit.Nulla alias assumenda quam iste repellendus, dicta consequatur aperiam quod quos officiis mollitia numquam praesentium repellat provident quas perferendis hic ullam.Voluptate expedita tempora voluptatum velit.Sit voluptas magni unde, laborum totam nisi ab, laudantium suscipit nobis, voluptatibus tenetur odit eligendi pariatur? Lorem ipsum dolor sit amet consectetur adipisicing elit.Quia consequatur possimus, enim deleniti asperiores, fugit odit praesentium ipsam accusantium perspiciatis quod voluptatum aut libero.Esse unde eos eligendi possimus corporis quidem, aut sed accusantium alias! Molestias suscipit nostrum tenetur, autem sint totam dolor odit officiis ducimus mollitia deserunt quidem quisquam. Lorem ipsum, dolor sit amet consectetur adipisicing elit.Reprehenderit, quaerat!',
       });
     expect(respone.statusCode).toBe(200);
@@ -465,6 +467,7 @@ describe('POST Product add product from seller', () => {
         price: 150000,
         brand: 'toko Adidas',
         condition: 'New',
+        stock: 10,
         description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita, voluptatum? Lorem ipsum, dolor sit amet consectetur adipisicing elit.Nulla alias assumenda quam iste repellendus, dicta consequatur aperiam quod quos officiis mollitia numquam praesentium repellat provident quas perferendis hic ullam.Voluptate expedita tempora voluptatum velit.Sit voluptas magni unde, laborum totam nisi ab, laudantium suscipit nobis, voluptatibus tenetur odit eligendi pariatur? Lorem ipsum dolor sit amet consectetur adipisicing elit.Quia consequatur possimus, enim deleniti asperiores, fugit odit praesentium ipsam accusantium perspiciatis quod voluptatum aut libero.Esse unde eos eligendi possimus corporis quidem, aut sed accusantium alias! Molestias suscipit nostrum tenetur, autem sint totam dolor odit officiis ducimus mollitia deserunt quidem quisquam. Lorem ipsum, dolor sit amet consectetur adipisicing elit.Reprehenderit, quaerat!',
       });
     expect(respone.statusCode).toBe(401);
@@ -590,5 +593,46 @@ describe('GET Product', () => {
   test('should return response standar response data product', async () => {
     const respone = await requests(app).get('/product');
     expect(respone.body.data[0]).toEqual(expect.objectContaining(standarProduct));
+  });
+});
+
+describe('GET My Product', () => {
+  test('should return response status code 200', async () => {
+    const respone = await requests(app).get('/product/my-product').set('token', tokenSeller);
+    expect(respone.statusCode).toBe(200);
+  });
+  test('should return response object', async () => {
+    const respone = await requests(app).get('/product/my-product').set('token', tokenSeller);
+    expect(respone.body).toMatchObject(standarResponse);
+  });
+  test('should return response standar response data product', async () => {
+    const respone = await requests(app).get('/product/my-product').set('token', tokenSeller);
+    expect(respone.body.data[0]).toEqual(expect.objectContaining({
+      id: expect.any(Number),
+      name: expect.any(String),
+      price: expect.any(Number),
+      brand: expect.any(String),
+      categories: expect.any(String),
+      score: expect.any(Array),
+      stock: expect.any(Number),
+      image: expect.any(String),
+      description: expect.any(String),
+      condition: expect.any(String),
+      idUser: expect.stringContaining('emailTest@gmail.com'),
+      createdAt: expect.any(String),
+      updatedAt: expect.any(String),
+    }));
+  });
+});
+
+describe('edit stock product', () => {
+  test('return edit success', async () => {
+    const result = await requests(app).put('/product/edit-stock').set('token', tokenSeller)
+      .send({
+        id: 3,
+        id_product: 3,
+        stock: 5,
+      });
+    expect(result.body.message).toBe('data updated');
   });
 });

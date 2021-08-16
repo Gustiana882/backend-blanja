@@ -34,9 +34,33 @@ class StockProduct {
     });
   }
 
+  getStockById(id) {
+    return new Promise((resolve, reject) => {
+      this.table.findAll({
+        where: {
+          id,
+        },
+      })
+        .then((res) => resolve(res))
+        .catch((err) => reject(err));
+    });
+  }
+
   addStock(data) {
     return new Promise((resolve, reject) => {
       this.table.create(data)
+        .then((res) => resolve(res))
+        .catch((err) => reject(err));
+    });
+  }
+
+  editStock(data) {
+    return new Promise((resolve, reject) => {
+      this.table.update(data, {
+        where: {
+          id: data.id,
+        },
+      })
         .then((res) => resolve(res))
         .catch((err) => reject(err));
     });
