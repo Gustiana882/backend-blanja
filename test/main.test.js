@@ -51,7 +51,7 @@ beforeAll(async () => {
 
 describe('service register customer', () => {
   test('should return register success', async () => {
-    const result = await requests(app).post('/register/customer').send({
+    const result = await requests(app).post('/api/register/customer').send({
       name: formRegisterCustomer.name,
       email: formRegisterCustomer.email,
       password: formRegisterCustomer.password,
@@ -61,7 +61,7 @@ describe('service register customer', () => {
   });
 
   test('should return register gagal e-mail already registered', async () => {
-    const result = await requests(app).post('/register/customer').send({
+    const result = await requests(app).post('/api/register/customer').send({
       name: formRegisterCustomer.name,
       email: formRegisterCustomer.email,
       password: formRegisterCustomer.password,
@@ -81,7 +81,7 @@ const formRegisterSeller = {
 
 describe('service register seller', () => {
   test('should return register success', async () => {
-    const result = await requests(app).post('/register/seller').send({
+    const result = await requests(app).post('/api/register/seller').send({
       name: formRegisterSeller.name,
       email: formRegisterSeller.email,
       phone: formRegisterSeller.phone,
@@ -93,7 +93,7 @@ describe('service register seller', () => {
   });
 
   test('should return register gagal e-mail already registered', async () => {
-    const result = await requests(app).post('/register/seller').send({
+    const result = await requests(app).post('/api/register/seller').send({
       name: formRegisterSeller.name,
       email: formRegisterSeller.email,
       phone: formRegisterSeller.phone,
@@ -112,7 +112,7 @@ const formLoginCustomer = {
 
 describe('service login customer', () => {
   test('should return token jwt', async () => {
-    const result = await requests(app).post('/login/customer').send({
+    const result = await requests(app).post('/api/login/customer').send({
       email: formLoginCustomer.email,
       password: formLoginCustomer.password,
     });
@@ -131,7 +131,7 @@ const formLoginSeller = {
 
 describe('service login seller', () => {
   test('should return token jwt', async () => {
-    const result = await requests(app).post('/login/seller').send({
+    const result = await requests(app).post('/api/login/seller').send({
       email: formLoginSeller.email,
       password: formLoginSeller.password,
     });
@@ -160,19 +160,19 @@ const standarCustomerProfile = {
 describe('GET customer profile', () => {
   test('should return response status code 200', async () => {
     const respone = await requests(app)
-      .get('/profile/customer')
+      .get('/api/profile/customer')
       .set('token', tokenCustomer);
     expect(respone.statusCode).toBe(200);
   });
   test('should return response standar', async () => {
     const respone = await requests(app)
-      .get('/profile/customer')
+      .get('/api/profile/customer')
       .set('token', tokenCustomer);
     expect(respone.body).toMatchObject(standarResponse);
   });
   test('should return response standar data', async () => {
     const respone = await requests(app)
-      .get('/profile/customer')
+      .get('/api/profile/customer')
       .set('token', tokenCustomer);
     expect(respone.body.data[0]).toMatchObject(standarCustomerProfile);
   });
@@ -195,19 +195,19 @@ const standarSellerProfile = {
 describe('GET seller profile', () => {
   test('should return response status code 200', async () => {
     const respone = await requests(app)
-      .get('/profile/seller')
+      .get('/api/profile/seller')
       .set('token', tokenSeller);
     expect(respone.statusCode).toBe(200);
   });
   test('should return response standar', async () => {
     const respone = await requests(app)
-      .get('/profile/seller')
+      .get('/api/profile/seller')
       .set('token', tokenSeller);
     expect(respone.body).toMatchObject(standarResponse);
   });
   test('should return response standar data', async () => {
     const respone = await requests(app)
-      .get('/profile/seller')
+      .get('/api/profile/seller')
       .set('token', tokenSeller);
     expect(respone.body.data[0]).toMatchObject(standarSellerProfile);
   });
@@ -226,7 +226,7 @@ const standarResponseEditCustomer = {
 describe('PUT requests edit custemer profile', () => {
   test('should return response status Code', async () => {
     const respone = await requests(app)
-      .put('/profile/customer/edit-profile')
+      .put('/api/profile/customer/edit-profile')
       .set('token', tokenCustomer)
       .send({
         name: 'testedit',
@@ -235,7 +235,7 @@ describe('PUT requests edit custemer profile', () => {
   });
   test('should return response edit profile success', async () => {
     const respone = await requests(app)
-      .put('/profile/customer/edit-profile')
+      .put('/api/profile/customer/edit-profile')
       .set('token', tokenCustomer)
       .send({
         name: 'test edit',
@@ -250,7 +250,7 @@ describe('PUT requests edit custemer profile', () => {
   });
   test('should return response status Code', async () => {
     const respone = await requests(app)
-      .get('/profile/customer')
+      .get('/api/profile/customer')
       .set('token', tokenCustomer);
     expect(respone.body.data[0]).toMatchObject(standarResponseEditCustomer);
   });
@@ -269,7 +269,7 @@ const standarResponseEditSeller = {
 describe('PUT requests edit seller profile', () => {
   test('should return response status Code', async () => {
     const respone = await requests(app)
-      .put('/profile/seller/edit-profile')
+      .put('/api/profile/seller/edit-profile')
       .set('token', tokenSeller)
       .send({
         name: 'testedit',
@@ -278,7 +278,7 @@ describe('PUT requests edit seller profile', () => {
   });
   test('should return response edit profile success', async () => {
     const respone = await requests(app)
-      .put('/profile/seller/edit-profile')
+      .put('/api/profile/seller/edit-profile')
       .set('token', tokenSeller)
       .send({
         name: 'test edit',
@@ -293,7 +293,7 @@ describe('PUT requests edit seller profile', () => {
   });
   test('should return response status Code', async () => {
     const respone = await requests(app)
-      .get('/profile/seller')
+      .get('/api/profile/seller')
       .set('token', tokenSeller);
     expect(respone.body.data[0]).toMatchObject(standarResponseEditSeller);
   });
@@ -302,7 +302,7 @@ describe('PUT requests edit seller profile', () => {
 describe('PUT requests edit password customer', () => {
   test('should return response status Code', async () => {
     const respone = await requests(app)
-      .put('/profile/customer/edit-password')
+      .put('/api/profile/customer/edit-password')
       .set('token', tokenCustomer)
       .send({
         oldPassword: 'test1234',
@@ -312,7 +312,7 @@ describe('PUT requests edit password customer', () => {
   });
   test('should return response edit profile success', async () => {
     const respone = await requests(app)
-      .put('/profile/customer/edit-password')
+      .put('/api/profile/customer/edit-password')
       .set('token', tokenCustomer)
       .send({
         oldPassword: 'test1234',
@@ -322,7 +322,7 @@ describe('PUT requests edit password customer', () => {
   });
   describe('service login customer', () => {
     test('should return token jwt', async () => {
-      const result = await requests(app).post('/login/customer').send({
+      const result = await requests(app).post('/api/login/customer').send({
         email: formLoginCustomer.email,
         password: 'test12345',
       });
@@ -338,35 +338,35 @@ describe('PUT requests edit password customer', () => {
 describe('POST Category', () => {
   test('should return response post category', async () => {
     const respone = await requests(app)
-      .post('/product/category')
+      .post('/api/product/category')
       .set('token', tokenSeller)
       .send({ name: 'T-shirt' });
     expect(respone.statusCode).toBe(200);
   });
   test('should return response post category', async () => {
     const respone = await requests(app)
-      .post('/product/category')
+      .post('/api/product/category')
       .set('token', tokenSeller)
       .send({ name: 'Shorts' });
     expect(respone.statusCode).toBe(200);
   });
   test('should return response post category', async () => {
     const respone = await requests(app)
-      .post('/product/category')
+      .post('/api/product/category')
       .set('token', tokenSeller)
       .send({ name: 'Jacket' });
     expect(respone.statusCode).toBe(200);
   });
   test('should return response post category', async () => {
     const respone = await requests(app)
-      .post('/product/category')
+      .post('/api/product/category')
       .set('token', tokenSeller)
       .send({ name: 'Pants' });
     expect(respone.statusCode).toBe(200);
   });
   test('should return response post category', async () => {
     const respone = await requests(app)
-      .post('/product/category')
+      .post('/api/product/category')
       .set('token', tokenSeller)
       .send({ name: 'Shoes' });
     expect(respone.statusCode).toBe(200);
@@ -376,7 +376,7 @@ describe('POST Category', () => {
 describe('PUT requests edit password seller', () => {
   test('should return response status Code', async () => {
     const respone = await requests(app)
-      .put('/profile/seller/edit-password')
+      .put('/api/profile/seller/edit-password')
       .set('token', tokenSeller)
       .send({
         oldPassword: 'test1234',
@@ -386,7 +386,7 @@ describe('PUT requests edit password seller', () => {
   });
   test('should return response edit password success', async () => {
     const respone = await requests(app)
-      .put('/profile/seller/edit-password')
+      .put('/api/profile/seller/edit-password')
       .set('token', tokenSeller)
       .send({
         oldPassword: 'test1234',
@@ -396,7 +396,7 @@ describe('PUT requests edit password seller', () => {
   });
   describe('service login seller', () => {
     test('should return token jwt', async () => {
-      const result = await requests(app).post('/login/seller').send({
+      const result = await requests(app).post('/api/login/seller').send({
         email: formLoginCustomer.email,
         password: 'test12345',
       });
@@ -412,7 +412,7 @@ describe('PUT requests edit password seller', () => {
 describe('POST Product add product from seller', () => {
   test('should return response status code 200', async () => {
     const respone = await requests(app)
-      .post('/product')
+      .post('/api/product')
       .set('token', tokenSeller)
       .send({
         name: 'baju',
@@ -428,7 +428,7 @@ describe('POST Product add product from seller', () => {
   });
   test('should return response status code 200', async () => {
     const respone = await requests(app)
-      .post('/product')
+      .post('/api/product')
       .set('token', tokenSeller)
       .send({
         name: 'baju koko',
@@ -444,7 +444,7 @@ describe('POST Product add product from seller', () => {
   });
   test('should return response status code 200', async () => {
     const respone = await requests(app)
-      .post('/product')
+      .post('/api/product')
       .set('token', tokenSeller)
       .send({
         name: 'Adidas',
@@ -459,7 +459,7 @@ describe('POST Product add product from seller', () => {
   });
   test('should return access is not allowed if token not seller', async () => {
     const respone = await requests(app)
-      .post('/product')
+      .post('/api/product')
       .set('token', tokenCustomer)
       .send({
         name: 'Adidas',
@@ -478,7 +478,7 @@ describe('POST Product add product from seller', () => {
 describe('PUT Product', () => {
   test('should return response edit product success', async () => {
     const respone = await requests(app)
-      .put('/product')
+      .put('/api/product')
       .set('token', tokenSeller)
       .send({
         id: 1,
@@ -494,7 +494,7 @@ describe('PUT Product', () => {
   });
   test('should return response id not found', async () => {
     const respone = await requests(app)
-      .put('/product')
+      .put('/api/product')
       .set('token', tokenSeller)
       .send({
         id: 0,
@@ -510,7 +510,7 @@ describe('PUT Product', () => {
   });
   test('should return response check the input data is not empty', async () => {
     const respone = await requests(app)
-      .put('/product')
+      .put('/api/product')
       .set('token', tokenSeller)
       .send({
         id: 1,
@@ -526,7 +526,7 @@ describe('PUT Product', () => {
   });
   test('should return response access is not allowed if token not seller', async () => {
     const respone = await requests(app)
-      .put('/product')
+      .put('/api/product')
       .set('token', tokenCustomer)
       .send({
         id: 0,
@@ -545,21 +545,21 @@ describe('PUT Product', () => {
 describe('DELETE Product', () => {
   test('should return response delete product success', async () => {
     const respone = await requests(app)
-      .delete('/product/1')
+      .delete('/api/product/1')
       .set('token', tokenSeller);
     expect(respone.body.message).toEqual(expect.stringContaining('data success to delete'));
     expect(respone.statusCode).toBe(200);
   });
   test('should return response id not found! if token not seller', async () => {
     const respone = await requests(app)
-      .delete('/product/0')
+      .delete('/api/product/0')
       .set('token', tokenSeller);
     expect(respone.body.message).toEqual(expect.stringContaining('id not found!'));
     expect(respone.statusCode).toBe(200);
   });
   test('should return response access is not allowed if token not seller', async () => {
     const respone = await requests(app)
-      .delete('/product/2')
+      .delete('/api/product/2')
       .set('token', tokenCustomer);
     expect(respone.body.message).toEqual(expect.stringContaining('access is not allowed'));
     expect(respone.statusCode).toBe(401);
@@ -583,30 +583,30 @@ const standarProduct = {
 
 describe('GET Product', () => {
   test('should return response status code 200', async () => {
-    const respone = await requests(app).get('/product');
+    const respone = await requests(app).get('/api/product');
     expect(respone.statusCode).toBe(200);
   });
   test('should return response object', async () => {
-    const respone = await requests(app).get('/product');
+    const respone = await requests(app).get('/api/product');
     expect(respone.body).toMatchObject(standarResponse);
   });
   test('should return response standar response data product', async () => {
-    const respone = await requests(app).get('/product');
+    const respone = await requests(app).get('/api/product');
     expect(respone.body.data[0]).toEqual(expect.objectContaining(standarProduct));
   });
 });
 
 describe('GET My Product', () => {
   test('should return response status code 200', async () => {
-    const respone = await requests(app).get('/product/my-product').set('token', tokenSeller);
+    const respone = await requests(app).get('/api/product/my-product').set('token', tokenSeller);
     expect(respone.statusCode).toBe(200);
   });
   test('should return response object', async () => {
-    const respone = await requests(app).get('/product/my-product').set('token', tokenSeller);
+    const respone = await requests(app).get('/api/product/my-product').set('token', tokenSeller);
     expect(respone.body).toMatchObject(standarResponse);
   });
   test('should return response standar response data product', async () => {
-    const respone = await requests(app).get('/product/my-product').set('token', tokenSeller);
+    const respone = await requests(app).get('/api/product/my-product').set('token', tokenSeller);
     expect(respone.body.data[0]).toEqual(expect.objectContaining({
       id: expect.any(Number),
       name: expect.any(String),
@@ -627,7 +627,7 @@ describe('GET My Product', () => {
 
 describe('edit stock product', () => {
   test('return edit success', async () => {
-    const result = await requests(app).put('/product/edit-stock').set('token', tokenSeller)
+    const result = await requests(app).put('/api/product/edit-stock').set('token', tokenSeller)
       .send({
         id: 3,
         id_product: 3,
