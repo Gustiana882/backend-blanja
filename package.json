@@ -4,8 +4,9 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon app.js",
+    "test": "APP_STATUS=test jest --verbose",
+    "watch": "jest --watch --verbose",
+    "start": "APP_STATUS=dev nodemon server.js",
     "lint": "eslint .",
     "lint-fix": "eslint . --fix"
   },
@@ -13,16 +14,30 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^5.0.1",
+    "cloudinary": "^1.26.2",
+    "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
+    "env": "^0.0.2",
     "express": "^4.17.1",
+    "fs": "^0.0.1-security",
+    "jsonwebtoken": "^8.5.1",
     "morgan": "^1.10.0",
-    "pg": "^8.6.0"
+    "multer": "^1.4.2",
+    "pg": "^8.6.0",
+    "pg-hstore": "^2.3.4",
+    "redis": "^3.1.2",
+    "sequelize": "^6.6.5"
   },
   "devDependencies": {
+    "@types/jest": "^26.0.24",
     "eslint": "^7.30.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-config-standard": "^16.0.3",
     "eslint-plugin-import": "^2.23.4",
     "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^5.1.0"
+    "eslint-plugin-promise": "^5.1.0",
+    "jest": "^27.0.6",
+    "supertest": "^6.1.3"
   }
 }
