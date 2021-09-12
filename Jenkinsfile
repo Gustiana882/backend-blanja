@@ -20,13 +20,15 @@ pipeline {
         }
         stage("Build image") {
             steps {
-                builderImage = docker.build{"${imagename}"}
+                script {
+                    builderImage = docker.build("${imagename}")
+                }
             }
         }
         stage("Test Image") {
             steps {
-                builderImage.inside {
-                    sh "echo 'pass'"
+                script {
+                    builderImage.inside(sh "echo 'pass'")
                 }
             }
         }
