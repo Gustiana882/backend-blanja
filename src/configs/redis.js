@@ -3,8 +3,8 @@ const redis = require('redis');
 class Redis {
   constructor() {
     this.redisDb = redis.createClient({
-      host: process.env.REDIS_HOST,
-      port: process.env.REDIS_PORT,
+      host: '34.227.218.249',
+      port: 6379,
     });
   }
 

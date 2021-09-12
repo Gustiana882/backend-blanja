@@ -22,6 +22,7 @@
 
 require('dotenv/config');
 const requests = require('supertest');
+const redis = require('../src/configs/redis');
 const app = require('../app');
 const { sequelize } = require('../src/configs/db');
 
@@ -48,6 +49,8 @@ const createDataBase = async () => {
 beforeAll(async () => {
   await createDataBase();
 });
+
+afterEach(() => redis.redisDb.quit());
 
 describe('service register customer', () => {
   test('should return register success', async () => {
