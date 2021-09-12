@@ -1,3 +1,5 @@
+def builderImage
+def imagename = 'gustiana/back-blanja:1.0'
 pipeline {
     agent any
 
@@ -16,9 +18,22 @@ pipeline {
                 }
             }
         }
-        stage("finish") {
+        stage("Build image") {
             steps {
-                sh "echo 'finish'"
+                script {
+                    builderImage = docker.build {
+                        "${imagename}"
+                    }
+                }
+            }
+        }
+        stage("Test Image") {
+            steps {
+                script {
+                    builderImage.inside {
+                        sh "echo 'pass'"
+                    }
+                }
             }
         }
     }
