@@ -50,7 +50,7 @@ beforeAll(async () => {
   await createDataBase();
 });
 
-afterEach(() => redis.redisDb.quit());
+afterAll(() => redis.redisDb.quit());
 
 describe('service register customer', () => {
   test('should return register success', async () => {

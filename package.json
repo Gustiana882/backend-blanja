@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "APP_STATUS=test jest --detectOpenHandles --verbose",
+    "test": "APP_STATUS=test jest --verbose",
     "watch": "jest --watch --verbose",
     "start": "APP_STATUS=dev nodemon server.js",
     "lint": "eslint .",
