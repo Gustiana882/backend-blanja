@@ -28,7 +28,9 @@ pipeline {
         stage("Test Image") {
             steps {
                 script {
-                    builderImage.inside(sh "echo 'pass'")
+                    builderImage.inside {
+                        sh "echo 'pass'"
+                    }
                 }
             }
         }
