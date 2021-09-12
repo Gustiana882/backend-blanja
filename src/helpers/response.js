@@ -1,7 +1,9 @@
-function respon(res, status, result = '') {
+const log = require('../middleware/log_requests');
+
+function respon(res, statusCode, data = [], message = '', error = false) {
   let desc = '';
 
-  switch (status) {
+  switch (statusCode) {
     case 200:
       desc = 'OK';
       break;
@@ -27,17 +29,18 @@ function respon(res, status, result = '') {
       desc = '';
   }
 
-  const isObject = (data) => !!data && data.constructor === Object;
+  const isObject = (cekData) => !!cekData && cekData.constructor === Object;
 
   const results = {
-    status,
+    statusCode,
     description: desc,
-    isError: false,
+    isError: error,
+    message,
     // eslint-disable-next-line no-nested-ternary
-    data: isObject(result) ? [result] : Array.isArray(result) ? result : result,
+    data: isObject(data) ? [data] : Array.isArray(data) ? data : data,
   };
-
-  res.status(status).json(results);
+  log.response(JSON.stringify(results));
+  res.status(statusCode).json(results);
 }
 
 module.exports = respon;

@@ -1,23 +1,24 @@
+require('dotenv/config');
+// const dotenv = require('dotenv');
+const cors = require('cors');
 const express = require('express');
 
 const server = express();
-const PORT = 3000;
-
 const main = require('./src/main');
-const db = require('./src/configs/db');
 
+server.use(cors());
+server.use('/api/public', express.static('public'));
 server.use(express.json());
 server.use(express.urlencoded({ extended: true }));
+server.use('/api/', main);
 
-server.use(main);
+// if (process.env.APP_STATUS === 'test') {
+//   console.log('test');
+//   dotenv.config({ path: `${__dirname}/.env.development` });
+// }
+// if (process.env.APP_STATUS === 'dev') {
+//   console.log('dev');
+//   dotenv.config({ path: `${__dirname}/.env.development` });
+// }
 
-db.connect()
-  .then(() => {
-    server.listen(PORT, () => {
-      console.log('connecting to database');
-      console.log(`running server at http://localhost:${PORT}`);
-    });
-  })
-  .catch(() => {
-    console.log('Error connection database');
-  });
+module.exports = server;
