@@ -1,0 +1,14 @@
+version: "3.9"  # optional since v1.27.0
+services:
+  database:
+    container_name: "database"
+    ports: 5432:5432
+    volumes: 
+      - logvolume01:/var/log
+    environment:
+      POSTGRES_PASSWORD: admin1234
+      POSTGRES_USER: database
+  redis:
+    image: redis
+volumes:
+  logvolume01: {}
