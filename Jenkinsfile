@@ -16,5 +16,10 @@ pipeline {
                 }
             }
         }
+        stage("finish") {
+            steps {
+                sh "echo 'finish'"
+            }
+        }
     }
 }
