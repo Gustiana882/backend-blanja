@@ -32,7 +32,7 @@ pipeline {
                 }
             }
         }
-        stage("Push Image") {
+        stage("Delete Image") {
             steps {
                 sh "docker image prune -f"
             }
