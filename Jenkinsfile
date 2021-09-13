@@ -30,10 +30,6 @@ pipeline {
                 script {
                     builderImage.push()
                 }
-            }
-        }
-        stage("Delete Image") {
-            steps {
                 sh "docker image prune -f"
             }
         }
