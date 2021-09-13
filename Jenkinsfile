@@ -34,7 +34,7 @@ pipeline {
         }
         stage("Push Image") {
             steps {
-                sh "docker rmi $(docker images -f 'dangling=true' -q)"
+                sh "docker image prune -f"
             }
         }
         stage('Deployment') {
