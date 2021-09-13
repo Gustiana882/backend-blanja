@@ -25,12 +25,10 @@ pipeline {
                 }
             }
         }
-        stage("Test Image") {
+        stage("Push Image") {
             steps {
                 script {
-                    builderImage.inside {
-                        sh "echo 'pass'"
-                    }
+                    builderImage.push()
                 }
             }
         }
