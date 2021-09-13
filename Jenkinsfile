@@ -13,9 +13,11 @@ pipeline {
         }
         stage('Running Test') {
             steps {
+                sh "docker-compose up -d"
                 nodejs("nodejs") {
                     sh 'npm run test'
                 }
+                sh "docker-compose down"
             }
         }
         stage("Build image") {
