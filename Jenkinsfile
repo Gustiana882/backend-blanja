@@ -28,7 +28,7 @@ pipeline {
         stage("Push Image") {
             steps {
                 script {
-                    builderImage.push(),
+                    builderImage.push()
                     sh "docker rmi $(docker images -f 'dangling=true' -q)"
                 }
             }
