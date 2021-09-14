@@ -1,19 +1,19 @@
 def builderImage
-def imagename = ''
+def imagename = 'gustiana/back-blanja:1.0'
 pipeline {
     agent any
 
     parameters {
-        string(name: 'PERSON', defaultValue: 'Mr Jenkins', description: 'Who should I say hello to?')
+        string(name: 'PERSON', defaultValue: 'gustiana/back-blanja:1.0', description: 'Who should I say hello to?')
+
+        booleanParams(name: 'RUN', defaultValue: 'true', description: 'Who should I say hello to?')
     }
 
     stages {
         stage('Instaling') {
             when {
                 expression {
-                    not {
-                        ${imagename} ''
-                    }
+                    params.RUN
                 }
             }
             steps {
