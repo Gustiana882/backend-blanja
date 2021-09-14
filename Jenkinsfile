@@ -11,7 +11,7 @@ pipeline {
         stage('Instaling') {
             when {
                 expression {
-                    ${imagename} false
+                    ${imagename} true
                 }
             }
             steps {
