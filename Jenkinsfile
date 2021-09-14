@@ -11,12 +11,6 @@ pipeline {
                 }
             }
         }
-        stage('Runing image test') {
-            steps{
-                sh "cd .."
-                sh "ls"
-            }
-        }
         stage('Running Test') {
             steps {
                 // sh "sudo docker-compose up -d" 
