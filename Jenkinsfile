@@ -9,12 +9,12 @@ pipeline {
     }
 
     stages {
-        when {
+        stage('Instaling') {
+            when {
                 expression {
-                    params.PERSON != ''
+                    ${imagename} = ''
                 }
             }
-        stage('Instaling') {
             steps {
                 nodejs("nodejs") {
                     sh 'yarn install'
