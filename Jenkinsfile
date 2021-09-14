@@ -6,14 +6,13 @@ pipeline {
     parameters {
         string(name: 'PERSON', defaultValue: 'gustiana/back-blanja:1.0', description: 'Who should I say hello to?')
 
-        booleanParams(name: 'RUN', defaultValue: 'true', description: 'Who should I say hello to?')
     }
 
     stages {
         stage('Instaling') {
             when {
                 expression {
-                    params.RUN
+                    params.PERSON
                 }
             }
             steps {
