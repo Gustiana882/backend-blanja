@@ -1,30 +1,21 @@
 def builderImage
-def imagename 
+def imagename = 'gustiana/back-blanja:1.0'
 pipeline {
     agent any
 
+    parameters {
+        string(name: 'PERSON', defaultValue: 'Mr Jenkins', description: 'Who should I say hello to?')
+    }
+
     stages {
-        stage('Input') {
+        stage('Instaling') {
             when {
                 expression {
                     not {
-                        imagename null
+                        parameters ''
                     }
                 }
             }
-            input {
-                message "Should we continue?"
-                ok "Yes, we should."
-                submitter "alice,bob"
-                parameters {
-                    string(name: 'PERSON', defaultValue: 'Mr Jenkins', description: 'Who should I say hello to?')
-                }
-            }
-            steps {
-                echo "Hello, ${PERSON}, nice to meet you."
-            }
-        }
-        stage('Instaling') {
             steps {
                 nodejs("nodejs") {
                     sh 'yarn install'
