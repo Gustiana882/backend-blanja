@@ -14,7 +14,9 @@ pipeline {
                 }
             }
             when {
-                beforeInput true
+                expresion {
+                    param.PERSON true
+                }
             }
             steps {
                 echo "Hello, ${PERSON}, nice to meet you."
@@ -48,6 +50,7 @@ pipeline {
                 script {
                     builderImage.push()
                 }
+                sh "docker image prune -f"
             }
         }
         stage('Deployment') {
