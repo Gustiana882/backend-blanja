@@ -5,6 +5,9 @@ pipeline {
 
     stages {
         stage('Input') {
+            when {
+                beforeInput true
+            }
             input {
                 message "Should we continue?"
                 ok "Yes, we should."
@@ -70,12 +73,6 @@ pipeline {
             }
         }
         stage("Success") {
-            when {
-                allOf {
-                    sh "docker image prune -f"
-                }
-            }
-             
             steps {
                 sh "echo 'success runing'"
             }
