@@ -12,7 +12,7 @@ pipeline {
         stage('Instaling') {
             when {
                 expression {
-                    ${imagename} = ''
+                    ${imagename} == ''
                 }
             }
             steps {
