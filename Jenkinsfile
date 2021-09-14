@@ -19,7 +19,7 @@ pipeline {
         }
         stage('Running Test') {
             steps {
-                // sh "docker-compose up -d"
+                // sh "sudo docker-compose up -d" 
                 nodejs("nodejs") {
                     sh 'npm run test'
                 }
