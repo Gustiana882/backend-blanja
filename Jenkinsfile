@@ -1,5 +1,5 @@
 def builderImage
-def imagename = 'gustiana/back-blanja:1.0'
+def imagename = ''
 pipeline {
     agent any
 
