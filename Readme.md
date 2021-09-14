@@ -4,7 +4,7 @@
 ## Installation
 
 
-Clone the repository
+Clone the repository.
 
 ```bash
 git clone https://github.com/Gustiana882/backend-blanja.git
