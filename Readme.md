@@ -7,7 +7,7 @@
 Clone the repository
 
 ```bash
-git@github.com:Gustiana882/rest-api-expressjs.git
+git clone https://github.com/Gustiana882/backend-blanja.git
 ```
 
 ## Features
