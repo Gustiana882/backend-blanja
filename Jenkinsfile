@@ -7,7 +7,9 @@ pipeline {
         stage('Input') {
             when {
                 expression {
-                    beforeInput true
+                    not {
+                        imagename null
+                    }
                 }
             }
             input {
