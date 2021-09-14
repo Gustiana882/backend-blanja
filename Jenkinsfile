@@ -52,7 +52,9 @@ pipeline {
                                         makeEmptyDirs: false, 
                                         noDefaultExcludes: false, 
                                         patternSeparator: '[, ]+', 
-                                        remoteDirectory: '',
+                                        remoteDirectory: '', 
+                                        remoteDirectorySDF: false,
+                                        sourceFiles: '/home/ubuntu', 
                                         usePty: true,
                                         execTimeout: 120000,
                                     )
