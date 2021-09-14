@@ -4,7 +4,7 @@ pipeline {
     agent any
 
     parameters {
-        string(name: 'PERSON', defaultValue: 'gustiana/back-blanja:1.0', description: 'Who should I say hello to?')
+        string(name: 'NAME', defaultValue: '', description: 'Who should I say hello to?')
 
     }
 
@@ -12,7 +12,7 @@ pipeline {
         stage('Instaling') {
             when {
                 expression {
-                    ${imagename} != ''
+                    params.NAME != ''
                 }
             }
             steps {
