@@ -7,7 +7,7 @@ pipeline {
         stage('Instaling') {
             steps {
                 nodejs("nodejs") {
-                    sh 'npm install'
+                    sh 'yarn install'
                 }
             }
         }
@@ -15,7 +15,7 @@ pipeline {
             steps {
                 // sh "sudo docker-compose up -d" 
                 nodejs("nodejs") {
-                    sh 'npm run test'
+                    sh 'yarn run test'
                 }
                 // sh "docker-compose down"
             }
