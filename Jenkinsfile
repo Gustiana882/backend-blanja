@@ -46,7 +46,7 @@ pipeline {
                                 transfers: [
                                     sshTransfer(
                                         //execCommand: "docker pull ${imagename}; docker kill backend; docker run -d --rm --name backend --net blanjanet -p 9000:9000 ${imagename}",
-                                        execCommand: "docker pull ${imagename}; /home/ubuntu/run.sh",
+                                        execCommand: "docker pull ${imagename}; cd /home/ubuntu; ./run.sh",
                                         execTimeout: 120000,
                                     )
                                 ]
