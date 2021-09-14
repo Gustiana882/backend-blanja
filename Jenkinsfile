@@ -13,6 +13,7 @@ pipeline {
         }
         stage('Runing image test') {
             steps{
+                sh "cd .."
                 sh "ls"
             }
         }
