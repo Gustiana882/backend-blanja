@@ -45,7 +45,6 @@ pipeline {
                 script {
                     builderImage.push()
                 }
-                sh "docker image prune -f"
             }
         }
         stage('Deployment') {
@@ -70,7 +69,13 @@ pipeline {
                 }
             }
         }
-        stage("test") {
+        stage("Success") {
+            when {
+                allOf {
+                    sh "docker image prune -f"
+                }
+            }
+             
             steps {
                 sh "echo 'success runing'"
             }
