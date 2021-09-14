@@ -6,7 +6,7 @@ pipeline {
     stages {
         stage('Input') {
             when {
-                expresion {
+                expression {
                     beforeInput true
                 }
             }
