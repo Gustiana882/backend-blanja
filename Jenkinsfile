@@ -9,12 +9,12 @@ pipeline {
     }
 
     stages {
-        stage('Instaling') {
-            when {
+        when {
                 expression {
                     params.NAME != ''
                 }
             }
+        stage('Instaling') {
             steps {
                 nodejs("nodejs") {
                     sh 'yarn install'
