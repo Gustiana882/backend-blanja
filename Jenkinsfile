@@ -5,12 +5,10 @@ pipeline {
 
     stages {
         stage('Input Name') {
-            input {
                 parameters {
                     string(name: 'NAME', defaultValue: '', description: 'Who should I say hello to?')
 
                 }
-            }
         }
         stage('Instaling') {
             steps {
