@@ -3,17 +3,15 @@ def imagename = 'gustiana/back-blanja:1.0'
 pipeline {
     agent any
 
-    parameters {
-        string(name: 'NAME', defaultValue: '', description: 'Who should I say hello to?')
-
-    }
-
     stages {
-        when {
-                expression {
-                    params.NAME != ''
+        stage('Input Name') {
+            input {
+                parameters {
+                    string(name: 'NAME', defaultValue: '', description: 'Who should I say hello to?')
+
                 }
             }
+        }
         stage('Instaling') {
             steps {
                 nodejs("nodejs") {
@@ -31,6 +29,11 @@ pipeline {
             }
         }
         stage("Build image") {
+            when {
+                expression {
+                    params.NAME != ''
+                }
+            }
             steps {
                 script {
                     builderImage = docker.build("${imagename}")
@@ -38,6 +41,11 @@ pipeline {
             }
         }
         stage("Push Image") {
+            when {
+                expression {
+                    params.NAME != ''
+                }
+            }
             steps {
                 script {
                     builderImage.push()
@@ -46,6 +54,11 @@ pipeline {
             }
         }
         stage('Deployment') {
+            when {
+                expression {
+                    params.NAME != ''
+                }
+            }
             steps {
                 script {
                     sshPublisher(
