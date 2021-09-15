@@ -4,11 +4,9 @@ pipeline {
     agent any
 
     stages {
-        stage('Input Name') {
-                parameters {
-                    string(name: 'NAME', defaultValue: '', description: 'Who should I say hello to?')
+        parameters {
+            string(name: 'NAME', defaultValue: '', description: 'Who should I say hello to?')
 
-                }
         }
         stage('Instaling') {
             steps {
