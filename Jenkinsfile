@@ -1,5 +1,5 @@
 def builderImage
-def imagename = 'gustiana/back-blanja:1.0'
+// def imagename = 'gustiana/back-blanja:1.0'
 pipeline {
     agent any
 
@@ -33,7 +33,7 @@ pipeline {
             }
             steps {
                 script {
-                    builderImage = docker.build("${imagename}")
+                    builderImage = docker.build("${params.NAME}")
                 }
             }
         }
@@ -65,8 +65,8 @@ pipeline {
                                 verbose: false,
                                 transfers: [
                                     sshTransfer(
-                                        //execCommand: "docker pull ${imagename}; docker kill backend; docker run -d --rm --name backend --net blanjanet -p 9000:9000 ${imagename}",
-                                        execCommand: "docker pull ${imagename}; cd /home/ubuntu; ./run.sh",
+                                        //execCommand: "docker pull ${params.NAME}; docker kill backend; docker run -d --rm --name backend --net blanjanet -p 9000:9000 ${params.NAME}",
+                                        execCommand: "docker pull ${params.NAME}; cd /home/ubuntu; ./run.sh",
                                         execTimeout: 120000,
                                     )
                                 ]
