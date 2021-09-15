@@ -4,7 +4,7 @@ pipeline {
     agent any
 
     parameters {
-        string(name: 'NAME', defaultValue: 'gustiana/back-blanja:1.0', description: 'Who should I say hello to?')
+        string(name: 'NAME', defaultValue: '', description: 'Who should I say hello to?')
 
     }
 
