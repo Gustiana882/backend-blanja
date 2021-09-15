@@ -3,16 +3,12 @@ def imagename = 'gustiana/back-blanja:1.0'
 pipeline {
     agent any
 
-    stages {
-        stage('Example') {
-            parameters {
-                string(name: 'NAME', defaultValue: '', description: 'Who should I say hello to?')
+    parameters {
+        string(name: 'NAME', defaultValue: 'gustiana/back-blanja:1.0', description: 'Who should I say hello to?')
 
-            }
-            steps {
-                echo "Hello, ${NAME}, nice to meet you."
-            }
-        }
+    }
+
+    stages {
         stage('Instaling') {
             steps {
                 nodejs("nodejs") {
