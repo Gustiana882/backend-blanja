@@ -23,6 +23,9 @@ Clone the repository.
 git clone https://github.com/Gustiana882/backend-blanja.git
 ``` 
 
+## Documentation Postman
+Postmant : <a href="https://documenter.getpostman.com/view/14136755/Tzm3pdDs">https://documenter.getpostman.com/view/14136755/Tzm3pdDs</a>
+
 ## Features
 
   * CRUD Category
