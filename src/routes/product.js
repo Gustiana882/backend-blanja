@@ -9,8 +9,8 @@ const images = require('../middleware/images');
 
 route.get('/category', redis('category'), category.getAllCategory);
 route.post('/category', images('category'), category.addCategory);
-route.put('/category', validate(['admin']), images('category'), category.updateCategory);
-route.delete('/category/:id', validate(['admin']), category.deleteCategory);
+route.put('/category', validate(['seller']), images('category'), category.updateCategory);
+route.delete('/category/:id', validate(['seller']), category.deleteCategory);
 
 route.get('/search', controller.searchProduct);
 route.get('/filter', controller.fiter);
