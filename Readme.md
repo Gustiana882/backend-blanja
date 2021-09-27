@@ -1,7 +1,7 @@
 <p align="center"><img src="https://user-images.githubusercontent.com/55304067/133711515-d3fa47a3-fb29-4db6-bb45-01a62b428bd4.png" width="200px" alt="Arkademylogo.svg" /></p>
 
 <p align="center">
-    <a href="https://frontend-blanja.netlify.app/" target="blank">View Demo</a>
+    <a href="http://blanjanow.online/" target="blank">View Demo</a>
   · <a href="https://github.com/Gustiana882/front-ticketing/issues">Report Bug</a>
   · <a href="https://github.com/Gustiana882/front-ticketing/pulls">Request Feature</a>
 </p>
