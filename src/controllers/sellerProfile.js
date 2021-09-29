@@ -5,6 +5,7 @@ const response = require('../helpers/response');
 const hashPassword = require('../helpers/hash');
 const deleteImages = require('../helpers/delete_images');
 const decodeToken = require('../helpers/decode_token');
+const upload = require('../helpers/uploud_cloud');
 
 profil.getProfilSeller = async (req, res) => {
   try {
@@ -35,11 +36,11 @@ profil.editProfil = async (req, res) => {
         store: req.body.store,
         phone: req.body.phone,
         description: req.body.description,
-        image: (req.file) ? req.file.path : cekEmail.image,
+        image: (req.file) ? await upload('profile', pathImage) : cekEmail.image,
       };
       const result = await seller.updateProfile(data);
+      deleteImages(pathImage);
       if (result > 0 && req.file) {
-        deleteImages(cekEmail.image);
         response(res, 200, [], 'edit profil success');
       } else {
         response(res, 200, [], 'edit profil success');

@@ -10,6 +10,7 @@ const deleteImages = require('../helpers/delete_images');
 const nullValidator = require('../helpers/null_validator');
 const decodeToken = require('../helpers/decode_token');
 const stockData = require('../models/stockProduct');
+const upload = require('../helpers/uploud_cloud');
 
 products.getAllProduct = async (req, res) => {
   try {
@@ -114,13 +115,14 @@ products.addProduct = async (req, res) => {
       star: req.body.star,
       condition: req.body.condition,
       description: req.body.description,
-      image: pathImage,
+      image: await upload('product', pathImage),
       id_user: decode.user,
       stock: req.body.stock || 0,
     };
     const resultId = await model.addProduct(data);
     const result = await stockData.addStock({ id_product: resultId.id, stock: data.stock });
     redisDb.del('product');
+    deleteImages(pathImage);
     if (result) {
       response(res, 200, [], 'add product is success');
     } else {
@@ -183,14 +185,11 @@ products.updateProduct = async (req, res) => {
       review: req.body.review,
       star: req.body.star,
       condition: req.body.condition,
-      image: (req.file) ? req.file.path : cekid.image,
+      image: (req.file) ? await upload('product', pathImage) : cekid.image,
       description: req.body.description || 'no description',
     };
     const respons = await model.updateProduct(data);
-
-    if (req.file) {
-      deleteImages(cekid.image);
-    }
+    deleteImages(pathImage);
 
     redisDb.del('product');
     if (respons > 0) {
@@ -218,7 +217,7 @@ products.deleteProduct = async (req, res) => {
     }
 
     const respons = await model.deleteProduct(req.params.id);
-    deleteImages(cekid.image);
+    // deleteImages(cekid.image);
     redisDb.del('product');
     if (respons > 0) {
       response(res, 200, [], 'data success to delete');

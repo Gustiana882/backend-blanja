@@ -6,8 +6,9 @@ const bag = require('./routes/bag');
 const auth = require('./routes/auth');
 const profile = require('./routes/profile');
 const log = require('./middleware/log_requests');
+const { cloudConfig } = require('./configs/cloudinary');
 
-route.use('*', log.requests);
+route.use('*', cloudConfig, log.requests);
 route.use('/', auth);
 route.use('/profile', profile);
 route.use('/product', product);

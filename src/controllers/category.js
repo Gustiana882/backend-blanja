@@ -5,6 +5,7 @@ const response = require('../helpers/response');
 const { redisDb } = require('../configs/redis');
 const deleteImages = require('../helpers/delete_images');
 const nullValidator = require('../helpers/null_validator');
+const upload = require('../helpers/uploud_cloud');
 
 category.getAllCategory = async (req, res) => {
   try {
@@ -30,10 +31,11 @@ category.addCategory = async (req, res) => {
     } else {
       const data = {
         name: req.body.name,
-        image: pathImage,
+        image: await upload('category', pathImage),
       };
       const allCategory = await model.addCategory(data);
       redisDb.del('category');
+      deleteImages(pathImage);
       if (allCategory) {
         response(res, 200, [], 'add categories is success');
       } else {
@@ -42,7 +44,7 @@ category.addCategory = async (req, res) => {
     }
   } catch (error) {
     deleteImages(pathImage);
-    response(res, 500, [], error.message, true);
+    response(res, 500, [], pathImage, true);
   }
 };
 
@@ -60,10 +62,10 @@ category.updateCategory = async (req, res) => {
       const data = {
         id: req.body.id,
         name: req.body.name,
-        image: (req.file) ? req.file.path : cekId.image,
+        image: (req.file) ? await upload('category', pathImage) : cekId.image,
       };
       const update = await model.updateCategory(data);
-      deleteImages(cekId.image);
+      deleteImages(pathImage);
       redisDb.del('category');
       if (update > 0) {
         response(res, 200, [], 'edit category is success');
@@ -84,7 +86,7 @@ category.deleteCategory = async (req, res) => {
       response(res, 401, [], 'category id not found!', true);
     } else {
       const respons = await model.deleteCategory(req.params.id);
-      deleteImages(getId.image);
+      // deleteImages(getId.image);
       redisDb.del('category');
       redisDb.del('product');
       if (respons > 0) {

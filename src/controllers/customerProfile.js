@@ -5,6 +5,7 @@ const response = require('../helpers/response');
 const hashPassword = require('../helpers/hash');
 const deleteImages = require('../helpers/delete_images');
 const decodeToken = require('../helpers/decode_token');
+const upload = require('../helpers/uploud_cloud');
 
 profil.getProfilCustomer = async (req, res) => {
   try {
@@ -32,15 +33,15 @@ profil.editProfil = async (req, res) => {
       const data = {
         email: decode.user,
         name: req.body.name,
-        image: (req.file) ? req.file.path : cekEmail.image,
+        image: (req.file) ? await upload('profile', pathImage) : cekEmail.image,
         phone: req.body.phone,
         address: req.body.address,
         gender: req.body.gender || '',
         dateBirth: req.body.dateBirth || '',
       };
       const result = await customer.updateProfile(data);
+      deleteImages(pathImage);
       if (result > 0 && req.file) {
-        deleteImages(cekEmail.image);
         response(res, 200, [], 'edit profil success');
       } else {
         response(res, 200, [], 'edit profil success');
