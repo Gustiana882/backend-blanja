@@ -149,6 +149,7 @@ products.editStock = async (req, res) => {
 
     const result = await stockData.editStock(data);
     if (result > 0) {
+      redisDb.del('product');
       return response(res, 200, [], 'data updated');
     }
     response(res, 200, [], 'data gagal updated', true);
