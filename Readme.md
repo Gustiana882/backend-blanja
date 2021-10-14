@@ -6,6 +6,9 @@
   · <a href="https://github.com/Gustiana882/front-ticketing/pulls">Request Feature</a>
 </p>
 
+<h3 align="center">Deskripsi</h3>
+<p align="center">
+Blanja adalah website untuk jual beli barang seperti baju, celana, jaket dan lain-lain. Pengguna dapat memilih apakah ingin menjadi pelanggan yang dapat membeli berbagai produk atau menjadi penjual yang dapat menjual berbagai produk.</p>
 
 ## 💻 Built with
 
