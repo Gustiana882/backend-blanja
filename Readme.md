@@ -57,7 +57,7 @@ npm start
 ```
   View the website at: http://localhost:3000
 
-### `Contoh Arsitektur AWS Docker Lebih Dari 100 Transaksi Perdetik`
+### `Contoh Arsitektur AWS Lebih Dari 100 Transaksi Perdetik Dengan Docker`
  <a href="https://drive.google.com/file/d/1zKeqpupTE_GiRWKlUNgglw0PGXZYhG7_/view?usp=sharing" target="blank">https://drive.google.com/file/d/1zKeqpupTE_GiRWKlUNgglw0PGXZYhG7_/view?usp=sharing</a>
 
 ## Frontend
